@@ -1,0 +1,47 @@
+.div{background: red;}
+.quill {
+  box-sizing: border-box;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: auto;
+  grid-column-gap: 10px;
+  justify-items: stretch;
+  height: 100%;
+  width:100%;
+}
+.quill .editor {
+  wdith: 100%;
+}
+.quill button {
+  background-color: royalBlue;
+  border: 0;
+  border-radius: 3px;
+  font-size: 16px;
+  color: white;
+  margin: 0 0 10px;
+  padding: 10px;
+}
+form{
+  inset: 0;
+  display: grid;
+  background: whitesmoke;
+  place-items: center;
+  z-index: 44;
+}
+body > header {
+  position: fixed;
+  background: whitesmoke;
+  height: 8%;
+  width: 100%;
+  overflow-y: hidden;
+}
+header h2{
+  font-size: 1.3rem;
+  margin: 0;
+  padding: 0;
+}
+header p{
+  font-size: .8em;
+  margin: 0;
+  padding: 2px;
+}

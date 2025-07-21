@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title></title>
+  <style>
+  *{
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+    header{
+      position: fixed;
+    }
+    .note{
+      background: var(--bg);
+      border-radius: 12px;
+      padding: 6px;
+      border:solid 1px var(--b);
+      margin: 12px;
+    }
+    .note h3{
+      margin: 0;
+      padding: 16px 0;
+      font-size: 1.55rem;
+    }
+    .note p{
+      font-size: 1rem;
+      padding: 3px 0;
+      margin: 0;
+      color: #455;
+    }
+  </style>
+</head>
+
+<body>
+
+ <main>
+   
+ </main>
+ <script>
+   function read(){
+      
+      var container = document.querySelector('main')
+      container.innerHTML=''
+      for (i = 1; i <= localStorage.length; i++) {
+        if (localStorage.getItem('note' + i)) {
+          var noteObject = JSON.parse(localStorage.getItem('note' + i));
+      
+      noteObject = JSON.parse(localStorage.getItem('note' + i));
+          var template = ` <div class="note" style="--bg:#efe;--b:#6f6">
+     <h3>${noteObject.title}</h3>
+     <p>By ${noteObject.preacher}</p>
+     <p>${noteObject.notes}</p>
+     <p>${noteObject.date} • ${noteObject.location}</p>
+     <p>
+     <button type="button">Edit</button>
+     <button type="button">Favourite</button>
+     <button type="button">Delete</button>
+     </p>
+   </div>`;
+            
+        container.innerHTML+=template
+      
+      }
+     }
+    }
+    read()
+ </script>
+</body>
+
+</html>

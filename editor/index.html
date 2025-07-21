@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="UTF-8">
+  <title>Quill Demo</title>
+  <link rel='stylesheet' href='assets/quill.snow.css'><link rel="stylesheet" href="style.css">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+<form action="" style="position: fixed;">
+  <input type="text" placeholder="Title"/>
+  <input type="text" placeholder="Preacher">
+  <input type="text" placeholder="Location">
+  <p style="color: red;"></p>
+  <button type="button" onclick="v(this)">Next</button>
+</form>
+<header width="100%">
+  <h2></h2>
+  <p></p>
+</header>
+<div ng-app="App" ng-controller="QuillController">
+   <div class="quill">
+<span class="contents" style="display: none;">{{quillContents}}</span>
+     <div class="editor">
+       <div id="editor"></div>
+     </div>
+   </div>
+</div>
+<!-- partial -->
+  <script src='assets/angular.min.js'></script>
+<script src='assets/quill.min.js'></script><script  src="./script.js"></script>
+
+<script>
+  function loadScript(src, onSuccess, onError) {
+    var script = document.createElement('script');
+    script.src = src;
+    script.onload = onSuccess;
+    script.onerror = onError || function() {
+      console.error('Failed to load script: ' + src);
+    };
+    document.head.appendChild(script);
+  }
+
+  // Load with fallbacks
+  loadScript('assets/angular.min.js', function() {
+    loadScript('assets/quill.min.js', function() {
+      loadScript('./script.js');
+    });
+  });
+</script>
+<script>
+const  save = () =>{
+   console.log('saving')
+   var i = document.querySelectorAll('form input');
+   var dateObject = new Date;
+   var t = i[0].value, p=i[1].value, l=i[2].value,d=dateObject.getDate()+'-'+(dateObject.getMonth()+1)+'-'+dateObject.getFullYear();
+   document.querySelector('header h2').innerHTML = t
+   document.querySelector('header p').innerHTML = `By ${p} on ${d}, ${l} [<sp>${id()}</sp>]`
+   var noteObject ={
+     title:t,
+     preacher:p,
+     location:l,
+     date:d,
+     notes:document.querySelector('.contents').innerText
+   }
+   localStorage.setItem('note'+id(),JSON.stringify(noteObject))
+ }
+
+var iparam = location.search.substring(location.search.indexOf('=')+1)
+if(iparam.length >= 1){
+  var fp = JSON.parse(localStorage.getItem('note'+iparam))
+  var ff = document.querySelectorAll('form input');
+  ff[0].value = fp.title
+  ff[1].value = fp.preacher
+  ff[2].value = fp.location
+  setTimeout(function(){document.querySelector("body div.ql-editor").innerHTML += fp.notes
+},2400)
+}
+var e = document.querySelector('.quill .editor #editor .ql-editor')
+
+function v(j){
+     var i = document.querySelectorAll('form input');
+     var t = i[0].value.length > 1, p=i[1].value.length > 1, l=i[2].value.length > 1
+     
+     if(t && l && p){
+         j.form.style.display='none';
+          setInterval(save,1000)
+
+     }else{
+        document.querySelector('form p').innerText='invalid inputs';
+     }
+}
+function id() {
+  if(document.querySelector('header p sp')!=null){
+    return document.querySelector('header p sp').innerText
+  }
+  var count = 1;
+  for (i = 1; i <= localStorage.length; i++) {
+    if (localStorage.getItem('note' + i)) {
+      count++
+    }
+  }
+  if(iparam.length > 0){
+    return iparam
+  }
+  return count
+}
+
+
+
+var ed = document.querySelector(".quill .editor #editor .ql-editor")
+</script>
+</body>
+</html>

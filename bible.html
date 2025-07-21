@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title></title>
+  <style>
+  *{font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;}
+    h1{
+      text-align: center;
+      margin-block: 60px;
+    }
+    .books p{
+      
+      padding: 12px 6px;
+      box-sizing: border-box;
+      margin: 0;
+      border-bottom: solid 1px dimgrey;
+      font-weight: 350;
+      
+    }
+    .books p.active, .chapters li.active{
+      background: black;
+      color: white;
+    }
+    .chapters,.verses{
+      position: fixed;
+      inset: 0;
+      display: none;
+      overflow: scroll;
+      background: white;
+      padding: 7px;
+    }
+    .chapters ul{padding: 0;}
+    .chapters li{
+      list-style: none;
+      display: inline-block;
+      background: #ddd;
+      font-size: 1.4rem;
+      padding: 9px;
+      margin:  6px;
+      text-align: center;
+      height:21px;
+      aspect-ratio: 1/1;
+      border-radius: 4px;
+    }
+    .verses h2{
+      position: fixed;
+      top: 0;
+      box-sizing: border-box;
+      left: 0;
+      background: white;
+      padding: 12px 5px;
+      width: 100%;
+    }
+    h2 i{
+      color: blue;
+      font-size: 1rem;
+      padding-right: 8px;
+      font-style: normal;
+      float: right;
+    }
+    .verses main {
+      padding-top: 60px;
+    }
+    .verses main p i{
+      vertical-align: super;
+      font-style: normal;
+      font-weight: bold;
+      color: dimgrey;
+      padding-right: 5px;
+      font-size: .76rem;
+    }
+    .verses button.next{
+      background: black;
+      float: right;
+      margin-right: 12px;
+      right: 12px;
+      border: 0;
+      color: white;
+      padding: 8px 16px;
+      
+      font-size: 1.1rem;
+      border-radius: 8px;
+    }
+    .fav{
+      position: fixed;
+      inset: 0;
+      overflow-y: scroll;
+      display: none;
+      background: white;
+      z-index: 55;
+    }
+    .fav .item{
+      background: #ccf;
+      padding: 5px;
+      border-radius: 12px;
+      margin: 6px 0;
+    }
+    .fav .item .ref{
+      font-weight: bold;
+    }
+    p.fv{
+      font-weight: bold;
+      margin: 12px 4px;
+      position: relative;
+    }
+    p.fv span{
+      width:16px;
+      aspect-ratio: 1/1;
+      background: black;
+      color:white;
+      border-radius: 500px;
+      text-align: center;
+      position: absolute;
+      right:0;
+      padding: 1.5px;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>Holy Bible</h1>
+  <p class="fv" onclick="document.querySelector('.fav').style.display='block'">Favourites <span id="counter"></span></p>
+  <div class="books">
+   
+  </div>
+  <div class="chapters">
+    <h2>Genesis</h2>
+    <ul>
+
+    </ul>
+  </div>
+  
+  <div class="verses">
+    <h2></h2>
+    <main>
+    </main>
+  </div>
+  
+  <div class="fav">
+
+  </div>
+
+  </div>
+  <script src="bible.js" type="text/javascript" charset="utf-8"></script>
+  <script>
+    // console.log(bible)
+    document.getElementById('counter').innerText = id()-1
+   for(i=0;i<66;i++){
+     document.querySelector('.books').innerHTML += `<p onclick='openChapters(this,${i})'>${bible[i].name}</p>`
+   }
+   function openChapters(h,id){
+    var cab= document.querySelector('.books > p.active')
+    if(cab){cab.classList.remove('active')}
+     h.classList.add('active')
+     document.querySelector('.chapters'). style.display ='block';
+     document.querySelector('.chapters h2').innerHTML = bible[id].name+"<i onclick='bfc()'>Back</i>";
+     document.querySelector('.chapters ul').innerHTML =''
+     for(i=1;i<=bible[id].chapters.length;i++){
+     document.querySelector('.chapters ul').innerHTML += `<li onclick='openVerse(this,${id}, ${i})'>${i}</li>`}
+   }
+   function openVerse(u,b,c){
+        var cab= document.querySelector('.chapters  li.active')
+    if(cab){cab.classList.remove('active')}
+     u.classList.add('active')
+     document.querySelector('.verses'). style.display ='block';
+     document.querySelector('.verses h2').innerHTML = bible[b].name+" "+c+`<i onclick="document.querySelector('.verses').style.display = 'none'">Back</i>`;
+     document.querySelector('.verses main').innerHTML =''
+     for(i=1;i<=bible[b].chapters[c-1].length;i++){
+     document.querySelector('.verses main').innerHTML += `          <p ondblclick="favorite('${bible[b].name + " "+c+":"+i}',this)"><i>${i}</i><span>${bible[b].chapters[c-1][i-1]}</span></p>
+`}
+document.querySelector(".verses").scrollTop=0
+  document.querySelector('.verses main').innerHTML += ` <button class="next" onclick="nextChapter()">Next Chapter</button>`
+   }
+   function bfc(){
+     document.querySelector('.chapters').style.display = 'none'
+   }
+   function nextChapter(){
+     document.querySelector('.verses').style.display = 'none'
+     var next = parseInt(document.querySelector('.chapters li.active').innerText)
+     document.querySelectorAll('.chapters li')[next].click()
+   }
+   function favorite(ref,v){
+     var fO = {
+       verse:v.querySelector('span').innerText,
+       ref:ref
+     }
+    localStorage.setItem('bible'+id(),JSON.stringify(fO))
+   
+   document.querySelector('.fv #counter').innerHTML = id()-1
+   readFav()
+   } 
+   function id() {
+  var count = 1;
+  for (i = 1; i <= localStorage.length; i++) {
+    if (localStorage.getItem('bible' + i)) {
+      count++
+    }
+  }
+  return count
+}
+   function readFav(){
+           var container = document.querySelector('.fav')
+      container.innerHTML = ''
+      container.innerHTML = `<h2>Favorites<i onclick="document.querySelector('.fav').style.display = 'none'">Back</i></h2>`
+      for (i = 1; i <= localStorage.length; i++) {
+        if (localStorage.getItem('bible' + i)) {
+          var favObject = JSON.parse(localStorage.getItem('bible' + i));
+          var template = ` <div class="item">
+    <p>${favObject.verse}</p>
+    <p class="ref">${favObject.ref}</p>`;
+          container.innerHTML += template
+        }
+      }
+   }
+   readFav()
+  </script>
+  
+</body>
+
+</html>
