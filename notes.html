@@ -50,18 +50,17 @@
           var noteObject = JSON.parse(localStorage.getItem('note' + i));
       
       noteObject = JSON.parse(localStorage.getItem('note' + i));
-          var template = ` <div class="note" style="--bg:#efe;--b:#6f6">
-     <h3>${noteObject.title}</h3>
-     <p>By ${noteObject.preacher}</p>
-     <p>${noteObject.notes}</p>
-     <p>${noteObject.date} • ${noteObject.location}</p>
-     <p>
-     <button type="button">Edit</button>
-     <button type="button">Favourite</button>
-     <button type="button">Delete</button>
-     </p>
-   </div>`;
-            
+var template = `
+  <div class="note" onclick="window.location.href='editor/assets/viewer.html?i=${i}'" style="--bg:#efe;--b:#6f6">
+    <h3>${noteObject.title}</h3>
+    <p>By ${noteObject.preacher}</p>
+    <p>${noteObject.date} • ${noteObject.location}</p>
+    <p>
+      <button type="button" onclick="event.stopPropagation(); window.location.href='editor/index.html?i=${i}'">Edit</button>
+      <button type="button" onclick="event.stopPropagation(); /* Add favourite logic here */">Favourite</button>
+      <button type="button" onclick="event.stopPropagation(); /* Add delete logic here */">Delete</button>
+    </p>
+  </div>`;
         container.innerHTML+=template
       
       }

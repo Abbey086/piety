@@ -73,35 +73,80 @@
 Pie chart of answered to unanswered prayers
  -->  </div>
  <div class="verseoftheday">
-   <p>Verse here</p>
-   <p>Book 4:24</p>
-   <p>21/08/2028</p>
+<div class="verse-of-day">
+  <h3>Verse of the Day</h3>
+  <p id="dailyVerse">Loading...</p>
+</div>
+
  </div>
  
  <main>
    
  </main>
+ <script src="bible.js" type="text/javascript" charset="utf-8"></script>
+
  <script>
-   function read(){
-      
-      var container = document.querySelector('main')
-      container.innerHTML=''
-      for (i = 1; i <= localStorage.length; i++) {
-        if (localStorage.getItem('note' + i)) {
-          var noteObject = JSON.parse(localStorage.getItem('note' + i));
+function generateVerseOfDay() {
+  const today = new Date().toISOString().split('T')[0]; // e.g. "2025-07-22"
+  const storedData = JSON.parse(localStorage.getItem("verseOfTheDay"));
+
+  // If verse exists and it's for today, use it
+  if (storedData && storedData.date === today) {
+    displayVerseOfTheDay(storedData);
+    return;
+  }
+
+  // Otherwise, generate a new verse
+  const bookIndex = Math.floor(Math.random() * bible.length);
+  const book = bible[bookIndex];
+  const chapterIndex = Math.floor(Math.random() * book.chapters.length);
+  const chapter = book.chapters[chapterIndex];
+  const verseIndex = Math.floor(Math.random() * chapter.length);
+  const verseText = chapter[verseIndex];
+  const reference = `${book.name} ${chapterIndex + 1}:${verseIndex + 1}`;
+
+  const newVerse = {
+    date: today,
+    reference: reference,
+    text: verseText
+  };
+
+  localStorage.setItem("verseOfTheDay", JSON.stringify(newVerse));
+  displayVerseOfTheDay(newVerse);
+}
+
+function displayVerseOfTheDay(verseObj) {
+  document.getElementById("dailyVerse").innerHTML =
+    `<strong>${verseObj.reference}</strong> — ${verseObj.text}`;
+}
+
+// Generate one when the page loads
+generateVerseOfDay();
+   function read() {
+  
+  var container = document.querySelector('main')
+  container.innerHTML = ''
+  for (i = 1; i <= localStorage.length; i++) {
+    if (localStorage.getItem('note' + i)) {
+      var noteObject = JSON.parse(localStorage.getItem('note' + i));
       
       noteObject = JSON.parse(localStorage.getItem('note' + i));
-          var template = ` <div class="note" style="--bg:#efe;--b:#6f6">
-     <h3>${noteObject.title}</h3>
-     <p>By ${noteObject.preacher}</p>
-     <p>${noteObject.date} • ${noteObject.location}</p>
-   </div>`;
-            
-        container.innerHTML+=template
+      var template = `
+  <div class="note" onclick="window.location.href='editor/assets/viewer.html?i=${i}'" style="--bg:#efe;--b:#6f6">
+    <h3>${noteObject.title}</h3>
+    <p>By ${noteObject.preacher}</p>
+    <p>${noteObject.date} • ${noteObject.location}</p>
+    <p>
+      <button type="button" onclick="event.stopPropagation(); window.location.href='editor/index.html?i=${i}'">Edit</button>
+      <button type="button" onclick="event.stopPropagation(); /* Add favourite logic here */">Favourite</button>
+      <button type="button" onclick="event.stopPropagation(); /* Add delete logic here */">Delete</button>
+    </p>
+  </div>`;
+      container.innerHTML += template
       
-      }
-     }
     }
+  }
+}
     read()
  </script>
 </body>

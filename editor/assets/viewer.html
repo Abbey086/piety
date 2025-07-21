@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1">
+ <title></title>
+</head>
+
+<body>
+ <script>
+  function read() {
+ 
+ var container = document.querySelector('body')
+ container.innerHTML = ''
+ var i = location.search.substring(location.search.indexOf('=') + 1)
+  if (localStorage.getItem('note' + i)) {
+   var noteObject = JSON.parse(localStorage.getItem('note' + i));
+   
+   noteObject = JSON.parse(localStorage.getItem('note' + i));
+   var template = `
+   <h3>${noteObject.title}</h3>
+     <p>By ${noteObject.preacher}</p>
+     
+     <p>${noteObject.date} • ${noteObject.location}</p>
+     ${noteObject.notes}
+   </div>`;
+   
+   container.innerHTML += template
+   
+  }
+ }
+
+read()
+ </script>
+</body>
+
+</html>
