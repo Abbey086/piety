@@ -122,32 +122,8 @@ function displayVerseOfTheDay(verseObj) {
 
 // Generate one when the page loads
 generateVerseOfDay();
-   function read() {
-  
-  var container = document.querySelector('main')
-  container.innerHTML = ''
-  for (i = 1; i <= localStorage.length; i++) {
-    if (localStorage.getItem('note' + i)) {
-      var noteObject = JSON.parse(localStorage.getItem('note' + i));
-      
-      noteObject = JSON.parse(localStorage.getItem('note' + i));
-      var template = `
-  <div class="note" onclick="window.location.href='editor/assets/viewer.html?i=${i}'" style="--bg:#efe;--b:#6f6">
-    <h3>${noteObject.title}</h3>
-    <p>By ${noteObject.preacher}</p>
-    <p>${noteObject.date} • ${noteObject.location}</p>
-    <p>
-      <button type="button" onclick="event.stopPropagation(); window.location.href='editor/index.html?i=${i}'">Edit</button>
-      <button type="button" onclick="event.stopPropagation(); /* Add favourite logic here */">Favourite</button>
-      <button type="button" onclick="event.stopPropagation(); /* Add delete logic here */">Delete</button>
-    </p>
-  </div>`;
-      container.innerHTML += template
-      
-    }
-  }
-}
-    read()
+   
+    
  </script>
 </body>
 
