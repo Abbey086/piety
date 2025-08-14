@@ -173,6 +173,11 @@ border-radius: 577px;
     <button type="button" class="fbtn save" onclick="updateHabit()">Save Changes</button></div>
   </div>
   <script>
+  const par = new URLSearchParams(window.location.search);
+const c = par.get("c");
+if (c){
+  console.log('new')
+}
 function today() {
   const params = new URLSearchParams(window.location.search);
   const d = params.get("d");
@@ -217,6 +222,7 @@ function today() {
         habitObject.progress[today()]=0;
         localStorage.setItem('habit'+i,JSON.stringify(habitObject))
       }
+      var p = ''
       habitObject = JSON.parse(localStorage.getItem('habit' + i));
           var template = `<div class="habit habit${habitObject.id}">
       <h2><span>${habitObject.name}</span><c><i onclick="dialog(${habitObject.id})">Delete</i><i class="edit" onclick="sUD(${habitObject.id})">Edit</i></c></h2>

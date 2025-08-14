@@ -1,4 +1,6 @@
-<!DOCTYPE html>
+<tag>
+  <!--Tab to edit-->
+</tag><!DOCTYPE html>
    <html lang="en">
    <head>
       <meta charset="UTF-8">
@@ -61,6 +63,7 @@ body {
   font-family: var(--body-font);
   background-color: var(--body-color);
   color: var(--text-color);
+  overflow: hidden;
 }
 
 ul {
@@ -79,6 +82,7 @@ a {
 iframe{
   postion:fixed;
   width: 100%;
+  border: solid 2px ;
   height:100vh;
 }
 /* Remove the property of 100vh, when inserting its content */
@@ -258,10 +262,7 @@ iframe{
       <title>Responsive navbar with expanded menu - Bedimcode</title>
    </head>
    <body>
-     <div class="hero">
-       <img src="/149591-797189020_medium.mp4" autoplay controls muted>
-       <img width="20%" class="png" src="/pngwing.com.png" alt="">
-     </div>
+
        <iframe src="dashboard.html" frameborder="0"></iframe>
 
       <!--=============== NAVBAR ===============-->
@@ -288,22 +289,22 @@ iframe{
                </button>
 
                <ul class="nav__expand-list" id="nav-expand-list">
-                  <li>
+                  <li onclick="document.querySelector('iframe').src = 'editor/index.html'">
                      <a class="nav__expand-link">
                         <i class="ri-file-3-line"></i>
                         <span>Notes</span>
                      </a>
                   </li>
       
-                  <li>
+                  <li onclick="document.querySelector('iframe').src = 'prayer.html?c'">
                      <a class="nav__expand-link">
                         <i class="ri-candle-line"></i>
                         <span>Prayer</span>
                      </a>
                   </li>
       
-                  <li>
-                     <a class="nav__expand-link">
+                  <li onclick="document.querySelector('iframe').src = 'habit.html?c'">
+                     <a class="nav__expand-link" >
                         <i class="ri-task-line"></i>
                         <span>Habit</span>
                      </a>
@@ -359,6 +360,8 @@ function r(e,id){
   var links = ['dashboard.html','habit.html','prayer.html','bible.html']
     document.querySelector('iframe').src=links[id]
 }
+
+
       </script>
    </body>
 </html>

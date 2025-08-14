@@ -61,7 +61,7 @@
   <header>
     <img src="logo.svg" alt="">
     <h1>Christly</h1>
-    <button>New Note</button>
+    <button onclick="window.location.href ='/editor/index.html'">New Note</button>
   </header>
   <br>
   <br>
@@ -81,7 +81,14 @@ Pie chart of answered to unanswered prayers
  </div>
  
  <main>
-   
+     <div>
+    <button id="allBtn">All</button>
+    <button id="favBtn">Favorites</button>
+  </div>
+
+  <article>
+    
+  </article>
  </main>
  <script src="bible.js" type="text/javascript" charset="utf-8"></script>
 
@@ -125,6 +132,82 @@ generateVerseOfDay();
    
     
  </script>
+   <script>
+    const main = document.querySelector('article');
+    const allBtn = document.getElementById('allBtn');
+    const favBtn = document.getElementById('favBtn');
+
+    function getTab() {
+      const params = new URLSearchParams(window.location.search);
+      return params.get('tab') || 'all';
+    }
+
+    function setTab(tab) {
+      const url = new URL(window.location.href);
+      url.searchParams.set('tab', tab);
+      window.location.href = url.toString();
+    }
+
+    function read() {
+      const currentTab = getTab();
+      allBtn.classList.toggle('active', currentTab === 'all');
+      favBtn.classList.toggle('active', currentTab === 'fav');
+
+      main.innerHTML = '';
+
+      for (let i = 1; i <= localStorage.length; i++) {
+        const key = 'note' + i;
+        const raw = localStorage.getItem(key);
+        if (raw) {
+          let noteObject = JSON.parse(raw);
+          if (noteObject.alive !== 'deleted') {
+            if (noteObject.favourite === undefined) noteObject.favourite = false;
+
+            const isFav = noteObject.favourite;
+
+            // Skip if in "fav" tab and note is not a favourite
+            if (currentTab === 'fav' && !isFav) continue;
+
+            const template = `
+              <div class="note" onclick="window.location.href='editor/assets/viewer.html?i=${i}'" style="--bg:${isFav ? '#ffe' : '#efe'};--b:${isFav ? '#aa6' : '#6f6'}">
+                <h3>${noteObject.title}</h3>
+                <p>By ${noteObject.preacher}</p>
+                <p>${noteObject.date} • ${noteObject.location}</p>
+                <p>
+                  <button type="button" onclick="event.stopPropagation(); window.location.href='editor/index.html?i=${i}'">Edit</button>
+                  <button type="button" onclick="event.stopPropagation(); toggleFavourite(${i})">${isFav ? 'Unfavourite' : 'Favourite'}</button>
+                  <button type="button" onclick="event.stopPropagation(); dlt(${i})">Delete</button>
+                </p>
+              </div>`;
+            
+            main.innerHTML += template;
+          }
+        }
+      }
+    }
+
+    function toggleFavourite(index) {
+      const key = 'note' + index;
+      let note = JSON.parse(localStorage.getItem(key));
+      note.favourite = !note.favourite;
+      localStorage.setItem(key, JSON.stringify(note));
+      read();
+    }
+
+    function dlt(index) {
+      const key = 'note' + index;
+      let note = JSON.parse(localStorage.getItem(key));
+      note.alive = 'deleted';
+      localStorage.setItem(key, JSON.stringify(note));
+      read();
+    }
+
+    allBtn.onclick = () => setTab('all');
+    favBtn.onclick = () => setTab('fav');
+
+    read();
+  </script>
+
 </body>
 
 </html>
