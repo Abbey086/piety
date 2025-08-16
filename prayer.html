@@ -1,248 +1,384 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title></title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Prayer Journal</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: '#007AFF',
+            secondary: '#34C759',
+            danger: '#FF3B30',
+            background: '#F2F2F7',
+            card: '#FFFFFF',
+            text: '#1C1C1E',
+          }
+        }
+      }
+    }
+  </script>
   <style>
-  *{padding: 0;
-    margin: 0;
-    outline: 0;
-    box-sizing: border-box;
-  }
-    .prayer{background: #eef;
-      margin: 4%;
-      padding: 7px;
-      border-radius: 8px;
-      width: 92%;
-      
-    }
-    .prayer > *{
-      margin: 20px 0;
-    }
-    .prayer .details span{
-      background: #88f;
-      padding: 3px;
-      font-size: .8rem;
-      margin: 36px 12px;
-      border-radius: 63px;
-    }
-    .prog{
-      display: flex;
-      overflow: hidden;
-    }
-    .prog .thread-con{
-      width: 88%;
-      overflow: hidden;
-background: #ccc;
-height:20px;
-border-radius: 577px;
-            
-    }
-    .prog .thread{
-      background: #88f;
-      max-width: 100%;
-      text-align: center;
-height:20px;
-transition: all 1s linear;
-border-radius: 577px;
-    }
-    .prog button{
-      width: 10%;
-      border: none;
-      background: #55f;
-      border-radius: 7px;
-      color: white;
-    }
-    .prayer p:last-of-type{text-align: center;}
-    .prayer h2{
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .prayer h2 i{color: red;font-size: 16px;font-style: normal; background: #fcc; border-radius: 46px; padding: 3px 6px; font-weight: normal;}
-    .ud{
-      display:none;
+    .page {
       position: fixed;
-      inset: 0;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: #F2F2F7;
+      transition: transform 0.3s ease;
+      overflow-y: auto;
+      padding-bottom: 80px;
+    }
+    .page-enter {
+      transform: translateX(100%);
+    }
+    .page-enter-active {
+      transform: translateX(0);
+    }
+    .page-exit {
+      transform: translateX(0);
+    }
+    .page-exit-active {
+      transform: translateX(-100%);
+    }
+    .tab-bar {
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      height: 80px;
+      background: rgba(255,255,255,0.9);
+      backdrop-filter: blur(20px);
+      border-top: 1px solid rgba(0,0,0,0.1);
+      display: flex;
+      justify-content: space-around;
+      padding-top: 10px;
+    }
+    .tab-item {
+      display: flex;
       flex-direction: column;
-      justify-content: center;
-      background: white;
+      align-items: center;
+      color: #8E8E93;
     }
-    .fbtn{
-      background: black;
-      color: white;
-      border:0;
-      display: inline-block;
-      padding: 8px 18px;
-      border-radius:5px;
-      margin-left: 11px;
+    .tab-item.active {
+      color: #007AFF;
     }
-    .ud .fbtn{width: 120px;display: inline;}
-    .ud .fbtn.v{background: #ddd;color: black;}
-    input{
-      width: 90%;
-      margin: 8px;
-      border:none;
-      border-bottom: solid 1.5px black;
-      background: #ddd;
-      padding: 8px;
-      border-radius: 6px 6px 0 0;
+    .prayer-card {
+      position: relative;
+      overflow: hidden;
+      transition: all 0.2s;
     }
-    select {
-      width: 90%;
-      margin: 8px;
-      
-      border:none;
-      border-bottom: solid 1.5px black;
-      background: #ddd;
-      padding: 8px;
-      border-radius: 6px 6px 0 0;
+    .prayer-card:active {
+      transform: scale(0.98);
     }
-    .ud h2{text-align: center;margin: 41px 0;}
-   .prayer h2 c i.edit{
-      background: #cfc;
-      color:green;
-      padding-inline: 14px;
-      margin-inline: 5px;
+    .progress-bar {
+      height: 4px;
+      transition: width 0.5s ease;
     }
   </style>
 </head>
-<body>
-  
-  <form action="">
-    <input placeholder="prayer" id="prayer">
-    <input id="description" type="text" placeholder="Description">
-    <button type="button" class="fbtn" onclick="add()">Add</button>
-  </form>
-  <main>
-    <!--Tab to edit-->
-  </main>
-  <div class="dialog">
-    Are you sure you want to delete this?
+<body class="bg-background text-text font-sans antialiased">
+  <!-- Main Page (Prayer List) -->
+  <div id="main-page" class="page">
+    <header class="bg-primary p-4 text-white">
+      <h1 class="text-xl font-semibold">My Prayers</h1>
+    </header>
+    
+    <div class="p-4">
+      <div class="flex justify-between items-center mb-6">
+        <div>
+          <h2 class="text-lg font-medium">Today's Prayers</h2>
+          <p class="text-gray-500 text-sm" id="prayer-stats">0 prayers • 0 answered</p>
+        </div>
+        <button onclick="showPage('add-page')" class="bg-primary text-white rounded-full p-2">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+          </svg>
+        </button>
+      </div>
+      
+      <div id="prayers-container" class="space-y-3">
+        <!-- Prayers will be dynamically inserted here -->
+      </div>
+    </div>
+    
+    <div class="p-4">
+      <h2 class="text-lg font-medium mb-2">Prayer Statistics</h2>
+      <div class="bg-card rounded-xl p-4 shadow-sm">
+        <div class="flex justify-between items-center mb-3">
+          <span>Prayer Streak</span>
+          <span class="font-medium">3 days</span>
+        </div>
+        <div class="h-2 bg-gray-200 rounded-full overflow-hidden">
+          <div class="bg-primary h-full rounded-full" style="width: 30%"></div>
+        </div>
+        <div class="grid grid-cols-3 gap-4 mt-4">
+          <div class="text-center">
+            <div class="text-2xl font-bold">12</div>
+            <div class="text-xs text-gray-500">Total</div>
+          </div>
+          <div class="text-center">
+            <div class="text-2xl font-bold">5</div>
+            <div class="text-xs text-gray-500">Answered</div>
+          </div>
+          <div class="text-center">
+            <div class="text-2xl font-bold">42%</div>
+            <div class="text-xs text-gray-500">Rate</div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
-    <div class="ud">
-    <h2>Update Habit</h2>
-    <input type="text" name="new-title" id="new-title" value=""/>
-   
-    <input type="text" id="new-frequency">
-   <div> <button type="button" class="v fbtn" onclick="document.querySelector('.ud').style.display='none'">Cancel</button>
-    <button type="button" class="fbtn save" onclick="updateHabit()">Save Changes</button></div>
+
+  <!-- Add Prayer Page -->
+  <div id="add-page" class="page hidden">
+    <header class="bg-white p-4 flex items-center border-b border-gray-100">
+      <button onclick="showPage('main-page')" class="text-primary font-medium">Cancel</button>
+      <h1 class="flex-1 text-center font-semibold">New Prayer</h1>
+      <button onclick="validateAndAddPrayer()" class="text-primary font-medium">Save</button>
+    </header>
+    
+    <div class="p-4">
+      <div class="mb-4">
+        <label class="block text-sm font-medium text-gray-500 mb-1">Title</label>
+        <input id="prayer-title" type="text" placeholder="What would you like to pray for?" 
+          class="w-full p-3 bg-card rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
+        <p id="title-error" class="text-danger text-sm mt-1 hidden">Please enter a prayer title</p>
+      </div>
+      
+      <div class="mb-4">
+        <label class="block text-sm font-medium text-gray-500 mb-1">Description</label>
+        <textarea id="prayer-desc" rows="4" placeholder="Add more details about your prayer..." 
+          class="w-full p-3 bg-card rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"></textarea>
+      </div>
+    </div>
+  </div>
+
+  <!-- Prayer Detail Page -->
+  <div id="detail-page" class="page hidden">
+    <header class="bg-white p-4 flex items-center border-b border-gray-100">
+      <button onclick="showPage('main-page')" class="text-primary font-medium">Back</button>
+      <h1 class="flex-1 text-center font-semibold" id="detail-title">Prayer Details</h1>
+      <button onclick="deleteCurrentPrayer()" class="text-danger font-medium">Delete</button>
+    </header>
+    
+    <div id="detail-content" class="p-4">
+      <div class="bg-card rounded-xl p-4 shadow-sm mb-4">
+        <div class="flex justify-between items-center mb-2">
+          <h2 class="font-medium text-lg" id="prayer-title-detail">Prayer Title</h2>
+          <label class="relative inline-flex items-center cursor-pointer">
+            <input type="checkbox" id="answered-toggle" class="sr-only peer" onclick="toggleAnswered()">
+            <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-secondary"></div>
+            <span class="ml-2 text-sm font-medium">Answered</span>
+          </label>
+        </div>
+        
+        <div class="text-gray-500 mb-4" id="prayer-desc-detail">Prayer description goes here. This is where the user can see all the details about their specific prayer request.</div>
+        
+        <div class="text-xs text-gray-400">Created: <span id="prayer-date-detail">June 5, 2023</span></div>
+      </div>
+      
+      <div class="bg-card rounded-xl p-4 shadow-sm">
+        <h3 class="font-medium mb-2">Prayer Journal</h3>
+        <textarea placeholder="Add notes about this prayer..." 
+          class="w-full p-3 bg-card rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent mb-3"></textarea>
+        <button class="w-full bg-primary text-white py-2 rounded-lg font-medium">Save Notes</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tab Bar -->
+  <div class="tab-bar">
+    <div class="tab-item active" onclick="showPage('main-page')">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+      </svg>
+      <span class="text-xs mt-1">Prayers</span>
+    </div>
+    <div class="tab-item" onclick="alert('Analytics page would go here')">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+      </svg>
+      <span class="text-xs mt-1">Analytics</span>
+    </div>
+    <div class="tab-item" onclick="alert('Settings page would go here')">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+      </svg>
+      <span class="text-xs mt-1">Settings</span>
+    </div>
   </div>
 
   <script>
-  function id() {
-  var count = 1;
-  for (i = 1; i <= localStorage.length; i++) {
-    if (localStorage.getItem('prayer' + i)) {
-      count++
+    // Prayer data
+    let prayers = JSON.parse(localStorage.getItem('prayers')) || [];
+    let currentPrayerId = null;
+    
+    // Initialize the app
+    document.addEventListener('DOMContentLoaded', function() {
+      renderPrayers();
+      updateStats();
+    });
+    
+    // Show different pages
+    function showPage(pageId) {
+      document.querySelectorAll('.page').forEach(page => {
+        page.classList.add('hidden');
+      });
+      document.getElementById(pageId).classList.remove('hidden');
+      
+      // Update tab bar active state
+      document.querySelectorAll('.tab-item').forEach(item => {
+        item.classList.remove('active');
+      });
+      
+      if (pageId === 'main-page') {
+        document.querySelectorAll('.tab-item')[0].classList.add('active');
+      }
     }
-  }
-  return count
-}
-    function add(){
-      var dateObject = new Date();
-      var name = document.querySelector('#prayer').value, description=document.querySelector('#description').value;
-      var hbt = {
-        id:id(),
-        name:name,
-        description:description,
-        date:dateObject.getDate()+'-'+(dateObject.getMonth()+1)+'-'+dateObject.getFullYear(),
-        answered:false,
-        alive:true
+    
+    // Render all prayers
+    function renderPrayers() {
+      const container = document.getElementById('prayers-container');
+      container.innerHTML = '';
+      
+      if (prayers.length === 0) {
+        container.innerHTML = `
+          <div class="text-center py-10 text-gray-400">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mx-auto mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
+            <p>No prayers yet</p>
+            <p class="text-sm">Tap the + button to add your first prayer</p>
+          </div>
+        `;
+        return;
       }
       
-      localStorage.setItem('prayer'+id(),JSON.stringify(hbt))
-      read()
+      prayers.forEach(prayer => {
+        const prayerElement = document.createElement('div');
+        prayerElement.className = 'prayer-card bg-card rounded-xl p-4 shadow-sm active:scale-95 transition-transform';
+        prayerElement.innerHTML = `
+          <div class="flex justify-between items-start mb-2">
+            <h3 class="font-medium">${prayer.title}</h3>
+            <div class="flex space-x-2">
+              <span class="text-xs py-1 px-2 rounded-full ${prayer.answered ? 'bg-green-100 text-green-800' : 'bg-blue-100 text-blue-800'}">
+                ${prayer.answered ? 'Answered' : 'Unanswered'}
+              </span>
+            </div>
+          </div>
+          <p class="text-gray-500 text-sm mb-3 line-clamp-2">${prayer.description}</p>
+          <div class="flex justify-between items-center text-xs text-gray-400">
+            <span>${formatDate(prayer.date)}</span>
+            <button onclick="viewPrayerDetail('${prayer.id}')" class="text-primary text-sm font-medium">
+              View
+            </button>
+          </div>
+        `;
+        container.appendChild(prayerElement);
+      });
     }
-    function read(){
-      var container = document.querySelector('main')
-      container.innerHTML=''
-      for (i = 1; i <= localStorage.length; i++) {
-        if (localStorage.getItem('prayer' + i)) {
-          var prayerObject = JSON.parse(localStorage.getItem('prayer' + i));
-          var template = `<div class="prayer prayer${prayerObject.id}">
-      <h2><span>${prayerObject.name}</span><c><i onclick="dialog(${prayerObject.id})">Delete</i><i class="edit" onclick="sUD(${prayerObject.id})">Edit</i></c></h2>
-      <p class="details">
-      ${prayerObject.description}</p>
-      <div class="prog">
-        <div class="thread-con"><div style="width:100%;background:${a(prayerObject.answered)}"class="thread">${prayerObject.answered}</div></div>
-        <button type="button" onclick="record(${prayerObject.id})">✅</button>
-      </div>
-      <p>Since ${prayerObject.date}</p>
-    </div>`;
-            console.log(localStorage.getItem('prayer' + i).alive)
-      if (prayerObject.alive) {
-        container.innerHTML+=template
-      }
-      }
-     }
+    
+    // Format date
+    function formatDate(dateString) {
+      const date = new Date(dateString);
+      return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
     }
-    read()
-    function a(n){
-      if(n){return 'white'}
-      return 'blue'
-    }
-    function record(id){
-      var prayerObject = JSON.parse(localStorage.getItem('prayer'+id));
-     var tbr = document.querySelector('.prayer'+id)
-    prayerObject.answered = true;
-     //var thread = tbr.querySelector('.thread')
-    // thread.innerText = ob.progress
-     tbr.innerHTML = `
-      <h2><span>${prayerObject.name}</span><c><i onclick="dialog(${prayerObject.id})">Delete</i><i class="edit" onclick="sUD(${prayerObject.id})">Edit</i></c></h2>
-      <p class="details">
-      ${prayerObject.description}</p>
-      <div class="prog">
-        <div class="thread-con"><div style="width:100%;background:${a(prayerObject.answered)}"class="thread">${prayerObject.answered}</div></div>
-        <button type="button" onclick="record(${prayerObject.id})">✅</button>
-      </div>      <p>Since ${prayerObject.date}</p>
-
-`;
- 
-     localStorage.setItem('prayer'+id,JSON.stringify(prayerObject))
-    }
-    function dialog(id){
-      deleteprayer(id)
-    }
-    function deleteprayer(id){
-      var prayerObject = JSON.parse(localStorage.getItem('prayer'+id));
-     var tbd = document.querySelector('.prayer'+id)
-     tbd.remove()
-     prayerObject.alive = false;
-     localStorage.setItem('prayer'+id,JSON.stringify(prayerObject))
-    }
-    function sUD(id){
-      document.querySelector('.ud').style.display = 'flex'
-     var prayerObj = JSON.parse(localStorage.getItem('prayer'+id))
-     document.querySelector('.ud #new-title').value = prayerObj.name
-     document.querySelector('.ud #new-frequency').value = prayerObj.description
-     document.querySelector('.ud button.save').setAttribute('onclick',`updateprayer(${id})`)
-    }
-    function updateprayer(id){
-      var prayerObj = JSON.parse(localStorage.getItem('prayer'+id))
-      prayerObj.name = document.querySelector('.ud #new-title').value;
-      prayerObj.description = document.querySelector('.ud #new-frequency').value;
-
-      localStorage.setItem('prayer'+id, JSON.stringify(prayerObj))
+    
+    // Validate and add new prayer
+    function validateAndAddPrayer() {
+      const titleInput = document.getElementById('prayer-title');
+      const titleError = document.getElementById('title-error');
+      const descInput = document.getElementById('prayer-desc');
       
-      var prayerObject = JSON.parse(localStorage.getItem('prayer'+id));
-     var tbr = document.querySelector('.prayer'+id)
-    //prayerObject.progress += 1;
-     //var thread = tbr.querySelector('.thread')
-    // thread.innerText = ob.progress
-     tbr.innerHTML = `
-      <h2><span>${prayerObject.name}</span><c><i onclick="dialog(${prayerObject.id})">Delete</i><i class="edit" onclick="sUD(${prayerObject.id})">Edit</i></c></h2>
-      <p class="details">
-      ${prayerObject.description}</p>
-      <div class="prog">
-        <div class="thread-con"><div style="width:100%;background:${a(prayerObject.answered)}"class="thread">${prayerObject.answered}</div></div>
-        <button type="button" onclick="record(${prayerObject.id})">✅</button>
-      </div><p>Since ${prayerObject.date}</p>`;
- document.querySelector('.ud button').click()
+      if (!titleInput.value.trim()) {
+        titleError.classList.remove('hidden');
+        titleInput.focus();
+        return;
+      }
+      
+      titleError.classList.add('hidden');
+      
+      const newPrayer = {
+        id: Date.now().toString(),
+        title: titleInput.value.trim(),
+        description: descInput.value.trim(),
+        date: new Date().toISOString(),
+        answered: false,
+        notes: ''
+      };
+      
+      prayers.push(newPrayer);
+      savePrayers();
+      
+      // Clear inputs
+      titleInput.value = '';
+      descInput.value = '';
+      
+      // Show main page and refresh list
+      showPage('main-page');
+      renderPrayers();
+      updateStats();
+    }
+    
+    // View prayer details
+    function viewPrayerDetail(prayerId) {
+      const prayer = prayers.find(p => p.id === prayerId);
+      if (!prayer) return;
+      
+      currentPrayerId = prayerId;
+      
+      document.getElementById('detail-title').textContent = prayer.title;
+      document.getElementById('prayer-title-detail').textContent = prayer.title;
+      document.getElementById('prayer-desc-detail').textContent = prayer.description;
+      document.getElementById('prayer-date-detail').textContent = formatDate(prayer.date);
+      document.getElementById('answered-toggle').checked = prayer.answered;
+      
+      showPage('detail-page');
+    }
+    
+    // Toggle answered status
+    function toggleAnswered() {
+      const prayer = prayers.find(p => p.id === currentPrayerId);
+      if (!prayer) return;
+      
+      prayer.answered = !prayer.answered;
+      savePrayers();
+      renderPrayers();
+      updateStats();
+    }
+    
+    // Delete current prayer
+    function deleteCurrentPrayer() {
+      if (!currentPrayerId) return;
+      
+      if (confirm('Are you sure you want to delete this prayer?')) {
+        prayers = prayers.filter(p => p.id !== currentPrayerId);
+        savePrayers();
+        showPage('main-page');
+        renderPrayers();
+        updateStats();
+      }
+    }
+    
+    // Update prayer stats
+    function updateStats() {
+      const totalPrayers = prayers.length;
+      const answeredPrayers = prayers.filter(p => p.answered).length;
+      const answerRate = totalPrayers > 0 ? Math.round((answeredPrayers / totalPrayers) * 100) : 0;
+      
+      document.getElementById('prayer-stats').textContent = `${totalPrayers} prayers • ${answeredPrayers} answered`;
+    }
+    
+    // Save prayers to localStorage
+    function savePrayers() {
+      localStorage.setItem('prayers', JSON.stringify(prayers));
     }
   </script>
 </body>
-
 </html>
+
