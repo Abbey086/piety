@@ -291,37 +291,6 @@
       }, 300);
     }
 
-    function loadVerses(bookId, chapter) {
-      const versesPanel = document.getElementById('verses-panel');
-      const versesTitle = document.getElementById('verses-title');
-      const versesContainer = document.getElementById('verses-container');
-      
-      const bookName = bible[bookId].name;
-      versesTitle.textContent = `${bookName} ${chapter}`;
-      versesContainer.innerHTML = '';
-      
-      const chapterVerses = bible[bookId].chapters[chapter - 1];
-      
-      for (let i = 0; i < chapterVerses.length; i++) {
-        const verseNum = i + 1;
-        const verseText = chapterVerses[i];
-        const verseReference = `${bookName} ${chapter}:${verseNum}`;
-        
-        const verseElement = document.createElement('div');
-        verseElement.className = 'py-3';
-        verseElement.innerHTML = `
-          <p onclick="showVerseMenu(${bookId}, ${chapter}, ${verseNum}, '${verseText.replace(/'/g, "\\'")}', '${verseReference}')" class="flex">
-            <span class="text-xs text-gray-500 font-medium mr-2">${verseNum}</span>
-            <span class="text-gray-900">${verseText}</span>
-          </p>
-        `;
-        
-        versesContainer.appendChild(verseElement);
-      }
-      
-      versesPanel.classList.remove('hidden');
-      versesPanel.classList.add('slide-in');
-    }
 
     function hideVersesPanel() {
       const versesPanel = document.getElementById('verses-panel');
@@ -430,6 +399,64 @@
         overlay.classList.add('hidden');
       }, 300);
     }
+function loadVerses(bookId, chapter) {
+    const versesPanel = document.getElementById('verses-panel');
+    const versesTitle = document.getElementById('verses-title');
+    const versesContainer = document.getElementById('verses-container');
+
+    const book = bible[bookId];
+    if (!book || !book.chapters[chapter - 1]) {
+        console.error('Invalid bookId or chapter');
+        return;
+    }
+
+    const bookName = book.name;
+    const chapterVerses = book.chapters[chapter - 1];
+
+    versesTitle.textContent = `${bookName} ${chapter}`;
+    versesContainer.innerHTML = '';
+
+    for (let i = 0; i < chapterVerses.length; i++) {
+        const verseNum = i + 1;
+        const verseText = chapterVerses[i];
+        const verseReference = `${bookName} ${chapter}:${verseNum}`;
+
+        // Create verse container
+        const verseElement = document.createElement('div');
+        verseElement.className = 'py-3';
+
+        // Create clickable verse line
+        const verseLine = document.createElement('p');
+        verseLine.className = 'flex';
+
+        const numSpan = document.createElement('span');
+        numSpan.className = 'text-xs text-gray-500 font-medium mr-2';
+        numSpan.textContent = verseNum;
+
+        const textSpan = document.createElement('span');
+        textSpan.className = 'text-gray-900';
+        textSpan.textContent = verseText;
+
+        verseLine.appendChild(numSpan);
+        verseLine.appendChild(textSpan);
+
+        // Add event listener instead of inline onclick
+        verseLine.addEventListener('click', () => {
+            showVerseMenu(bookId, chapter, verseNum, verseText, verseReference);
+        });
+
+        verseElement.appendChild(verseLine);
+        versesContainer.appendChild(verseElement);
+    }
+
+    // Slide in panel
+    versesPanel.classList.remove('hidden');
+
+    // Delay to allow CSS animation to trigger
+    requestAnimationFrame(() => {
+        versesPanel.classList.add('slide-in');
+    });
+}
 
     // Favorite functionality
     function toggleFavoriteVerse() {
@@ -463,7 +490,9 @@
       updateFavoriteCount();
       loadFavorites();
     }
-
+document.addEventListener('DOMContentLoaded', () => {
+  loadFavorites();
+});
     function addFavorite(reference, text) {
       const favorites = JSON.parse(localStorage.getItem('bible-favorites') || '[]');
       favorites.push({ reference, text });
@@ -486,41 +515,70 @@
       document.getElementById('fav-count').textContent = favorites.length;
     }
 
-    function loadFavorites() {
-      const favorites = JSON.parse(localStorage.getItem('bible-favorites') || '[]');
-      const container = document.getElementById('favorites-container');
-      const noFavoritesMessage = document.getElementById('no-favorites-message');
-      
-      if (favorites.length === 0) {
-        noFavoritesMessage.classList.remove('hidden');
-        container.innerHTML = '';
-      } else {
-        noFavoritesMessage.classList.add('hidden');
-        container.innerHTML = '';
-        
-        favorites.forEach((fav, index) => {
-          const favElement = document.createElement('div');
-          favElement.className = 'py-3 border-b border-gray-100';
-          favElement.innerHTML = `
-            <p class="text-sm text-gray-500">${fav.reference}</p>
-            <p class="text-gray-900 mt-1">${fav.text}</p>
-            <div class="mt-2 flex justify-end">
-              <button onclick="removeSpecificFavorite('${fav.reference.replace(/'/g, "\\'")}')" class="text-xs text-red-500">
-                Remove
-              </button>
-            </div>
-          `;
-          container.appendChild(favElement);
-        });
-      }
-    }
+function loadFavorites() {
+  const favorites = JSON.parse(localStorage.getItem('bible-favorites') || '[]');
+  const container = document.getElementById('favorites-container');
+  const noFavoritesMessage = document.getElementById('no-favorites-message');
 
-    function removeSpecificFavorite(reference) {
+  container.innerHTML = `        <div class="text-center text-gray-500 py-20" id="no-favorites-message">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mx-auto mb-3 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+          </svg>
+          <p class="text-gray-500">No favorites yet</p>
+          <p class="text-sm text-gray-400 mt-1">Tap on a verse and click the heart icon to save</p>
+        </div>`;
+  if (favorites.length === 0) {
+    noFavoritesMessage.classList.remove('hidden');
+    return;
+  }
+
+
+  favorites.forEach((fav) => {
+    document.getElementById('no-favorites-message').classList.add('hidden')
+    const favElement = document.createElement('div');
+    favElement.className = 'py-3 border-b border-gray-100';
+
+    const referenceP = document.createElement('p');
+    referenceP.className = 'text-sm text-gray-500';
+    referenceP.textContent = fav.reference;
+
+    const textP = document.createElement('p');
+    textP.className = 'text-gray-900 mt-1';
+    textP.textContent = fav.text;
+
+    const buttonDiv = document.createElement('div');
+    buttonDiv.className = 'mt-2 flex justify-end';
+
+    const removeBtn = document.createElement('button');
+    removeBtn.className = 'text-xs text-red-500';
+    removeBtn.textContent = 'Remove';
+
+    // SAFELY add click listener
+    removeBtn.addEventListener('click', () => {
+      removeSpecificFavorite(fav.reference, removeBtn);
+    });
+
+    buttonDiv.appendChild(removeBtn);
+    favElement.appendChild(referenceP);
+    favElement.appendChild(textP);
+    favElement.appendChild(buttonDiv);
+
+    container.appendChild(favElement);
+  });
+}
+
+
+
+    function removeSpecificFavorite(reference, b = null) {
       removeFavorite(reference);
       updateFavoriteCount();
-      loadFavorites();
+      //loadFavorites();
       showToast('Removed from favorites');
+    
+        var favElemTBD = b.parentElement.parentElement
+        favElemTBD.style.display='none'
       
+      console.log(JSON.parse(localStorage.getItem('bible-favorites') || '[]').length)
       // If we're in the favorites panel and there are no more favorites, show the empty message
       if (JSON.parse(localStorage.getItem('bible-favorites') || '[]').length === 0) {
         document.getElementById('no-favorites-message').classList.remove('hidden');
