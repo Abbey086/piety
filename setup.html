@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+  <title>Amanda Piety Life</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+    .fade-in {
+      opacity: 0;
+      animation: fadeIn 0.5s forwards;
+    }
+    .fade-out {
+      opacity: 1;
+      animation: fadeOut 0.4s forwards;
+    }
+    @keyframes fadeIn {
+      to {
+        opacity: 1;
+      }
+    }
+    @keyframes fadeOut {
+      to {
+        opacity: 0;
+      }
+    }
+    input:focus {
+      outline: none;
+      box-shadow: 0 0 0 2px rgba(251, 191, 36, 0.5);
+    }
+    .card-shadow {
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    }
+    .floating-shape {
+      animation: float 3s ease-in-out infinite;
+    }
+    .floating-shape:nth-child(2) {
+      animation-delay: -1s;
+    }
+    .floating-shape:nth-child(3) {
+      animation-delay: -2s;
+    }
+    @keyframes float {
+      0%, 100% {
+        transform: translateY(0px);
+      }
+      50% {
+        transform: translateY(-10px);
+      }
+    }
+    .icon-3d {
+      filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.1));
+    }
+  </style>
+</head>
+<body class="bg-gradient-to-br from-gray-50 to-blue-50 text-gray-800 min-h-screen flex flex-col">
+
+  <main id="screen" class="flex-1 flex flex-col items-center justify-center px-6 py-8 fade-in transition-opacity duration-500">
+    <!-- Content injected here -->
+  </main>
+
+  <script>
+const screens = [
+  {
+    title: "Welcome!",
+    subtitle: "Meaning of Piety",
+    text: "Welcome to the Amanda Piety Life! We’re thrilled to have you here. This space is dedicated to intentional living, faith-building, and personal growth within a supportive and purpose-driven community.",
+    icon: "🏛️",
+    bgColor: "from-blue-100 to-blue-50",
+    shapes: ["💎", "📱", "✨"]
+  },
+  {
+    title: "Church Notes",
+    subtitle: "Note Taking Feature",
+    text: "Capture sermon insights, study reflections, and spiritual thoughts with ease using our powerful and organized note-taking tool designed for your church and Bible experiences.",
+    icon: "📝",
+    bgColor: "from-pink-100 to-blue-50",
+    shapes: ["💝", "🔍", "⭐"]
+  },
+  {
+    title: "Habit Tracking",
+    subtitle: "Habit Tracking Feature",
+    text: "Establish and maintain daily habits that align with your spiritual, personal, and creative goals—track your progress and celebrate your growth within a nurturing environment.",
+    icon: "🏆",
+    bgColor: "from-green-100 to-green-50",
+    shapes: ["🏆", "💚", "🌟"]
+  },
+  {
+    title: "Prayer Tracking",
+    subtitle: "Prayer Tracking Feature",
+    text: "Keep a record of your prayer requests, monitor answered prayers, and deepen your prayer life through helpful reminders and thoughtful guidance.",
+    icon: "🙏",
+    bgColor: "from-purple-100 to-purple-50",
+    shapes: ["🙏", "✝️", "💜"]
+  },
+  {
+    title: "Bible Integration",
+    subtitle: "Bible App Integration",
+    text: "Enjoy seamless access to the Bible directly within the app. Highlight key verses, follow reading plans, and stay engaged with Scripture wherever you are.",
+    icon: "📖",
+    bgColor: "from-amber-100 to-orange-50",
+    shapes: ["📖", "✨", "🕊️"]
+  },
+  {
+    title: "Let's Get Started",
+    form: true
+  }
+];
+
+    let currentScreen = 0;
+    const screenDiv = document.getElementById("screen");
+
+    function renderScreen(index) {
+      screenDiv.classList.remove("fade-in");
+      screenDiv.classList.add("fade-out");
+      
+      setTimeout(() => {
+        const data = screens[index];
+        screenDiv.innerHTML = '';
+        
+        if (data.form) {
+          screenDiv.innerHTML = `
+            <div class="w-full max-w-sm mx-auto">
+              <div class="bg-white rounded-3xl p-8 card-shadow relative overflow-hidden">
+                <div class="absolute top-4 right-4 w-8 h-8 bg-gradient-to-br from-yellow-400 to-orange-400 rounded-full floating-shape"></div>
+                <div class="absolute top-12 left-4 w-4 h-4 bg-gradient-to-br from-blue-400 to-purple-400 rounded-full floating-shape"></div>
+                
+                <div class="text-center mb-6">
+                  <div class="w-16 h-16 bg-gradient-to-br from-blue-400 to-purple-500 rounded-2xl mx-auto mb-4 flex items-center justify-center icon-3d">
+                    <span class="text-2xl">👋</span>
+                  </div>
+                  <h1 class="text-2xl font-bold text-gray-800 mb-2">Welcome!</h1>
+                  <p class="text-gray-600 text-sm leading-relaxed">Let's personalize your experience. What should we call you?</p>
+                </div>
+                
+                <form id="nameForm" class="space-y-4">
+                  <input type="text" id="nameInput" placeholder="Your name" 
+                         class="w-full px-4 py-3 border border-gray-200 rounded-2xl text-gray-800 bg-gray-50 focus:bg-white transition-colors" required />
+                  <p id="errorMsg" class="text-red-500 text-sm hidden">Name must be more than 4 characters.</p>
+                  <button type="submit" 
+                          class="w-full bg-gradient-to-r from-yellow-400 to-orange-400 text-white font-medium py-3 rounded-2xl shadow-lg active:scale-95 transition-transform">
+                    Next →
+                  </button>
+                </form>
+              </div>
+            </div>
+          `;
+          
+          const nameForm = document.getElementById("nameForm");
+          nameForm.addEventListener("submit", (e) => {
+            e.preventDefault();
+            const name = document.getElementById("nameInput").value.trim();
+            const errorMsg = document.getElementById("errorMsg");
+            
+            if (name.length > 4) {
+              errorMsg.classList.add("hidden");
+              screenDiv.innerHTML = `
+                <div class="w-full max-w-sm mx-auto">
+                  <div class="bg-white rounded-3xl p-8 card-shadow text-center">
+                    <div class="w-16 h-16 bg-gradient-to-br from-green-400 to-blue-500 rounded-2xl mx-auto mb-4 flex items-center justify-center icon-3d">
+                      <span class="text-2xl">🎉</span>
+                    </div>
+                    <h1 class="text-2xl font-bold text-gray-800 mb-2">Thanks, ${name}!</h1>
+                    <p class="text-gray-600 leading-relaxed">You're all set to begin your journey with Amanda Piety Life.</p>
+                  </div>
+                </div>
+              `;
+                      window.location.href= 'index.html'
+
+            } else {
+              errorMsg.classList.remove("hidden");
+            }
+          });
+        } else {
+          screenDiv.innerHTML = `
+            
+              <div class="bg-white p-8  fixed w-full flex items-center h-full inset-0 overflow-hidden">
+              <div class="">
+                <!-- Floating shapes -->
+                ${data.shapes.map((shape, i) => `
+                  <div class="absolute floating-shape" style="
+                    top: ${200 + i * 15}px; 
+                    ${i % 2 === 0 ? 'right' : 'left'}: ${20 + i * 10}px;
+                    font-size: ${16 + i * 2}px;
+                    opacity: 0.7;
+                  ">${shape}</div>
+                `).join('')}
+                
+                <div class="text-center relative z-10">
+                  <div class="w-20 h-20 bg-gradient-to-br ${data.bgColor} rounded-3xl mx-auto mb-6 flex items-center justify-center icon-3d">
+                    <span class="text-3xl">${data.icon}</span>
+                  </div>
+                  
+                  <h1 class="text-2xl font-bold text-gray-800 mb-2">${data.title}</h1>
+                  <p class="text-gray-600 text-sm leading-relaxed mb-8">${data.text}</p>
+                  
+                  <button onclick="nextScreen()" 
+                          class="w-5/6 bg-gradient-to-r from-yellow-400 to-orange-400 text-white font-medium py-3 rounded-2xl shadow-lg active:scale-95 transition-transform bottom-12 left-[8.6%] fixed">
+                    Next →
+                  </button>
+                </div>
+                
+                <!-- Progress indicator -->
+                <div class="flex justify-center fixed bottom-3 left-[44%] mt-6 space-x-2">
+                  ${screens.slice(0, -1).map((_, i) => `
+                    <div class="w-2 h-2 rounded-full ${i === currentScreen ? 'bg-yellow-400' : 'bg-gray-200'}"></div>
+                  `).join('')}
+                </div>
+              </div>
+            </div>
+          `;
+        }
+        
+        screenDiv.classList.remove("fade-out");
+        screenDiv.classList.add("fade-in");
+      }, 300);
+    }
+
+    function nextScreen() {
+      if (currentScreen < screens.length - 1) {
+        currentScreen++;
+        renderScreen(currentScreen);
+      }
+      else{
+        window.location.href= 'index.html'
+      }
+    }
+
+    // Initial load
+    renderScreen(currentScreen);
+  </script>
+</body>
+</html>

@@ -83,17 +83,14 @@
 <body class="bg-background text-text font-sans antialiased">
   <!-- Main Page (Prayer List) -->
   <div id="main-page" class="page">
-    <header class="bg-primary p-4 text-white">
-      <h1 class="text-xl font-semibold">My Prayers</h1>
-    </header>
     
     <div class="p-4">
       <div class="flex justify-between items-center mb-6">
         <div>
-          <h2 class="text-lg font-medium">Today's Prayers</h2>
-          <p class="text-gray-500 text-sm" id="prayer-stats">0 prayers • 0 answered</p>
+          <h2 class="text-xl font-bold">Prayer Journal</h2>
+          <p class="text-gray-500 text-xs" id="prayer-stats">0 prayers • 0 answered</p>
         </div>
-        <button onclick="showPage('add-page')" class="bg-primary text-white rounded-full p-2">
+        <button onclick="showPage('add-page')" class="bg-blue-200 text-blue-700 rounded-full p-2">
           <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
           </svg>
@@ -105,7 +102,7 @@
       </div>
     </div>
     
-    <div class="p-4">
+    <div class="p-4 hidden">
       <h2 class="text-lg font-medium mb-2">Prayer Statistics</h2>
       <div class="bg-card rounded-xl p-4 shadow-sm">
         <div class="flex justify-between items-center mb-3">
@@ -181,7 +178,7 @@
         <div class="text-xs text-gray-400">Created: <span id="prayer-date-detail">June 5, 2023</span></div>
       </div>
       
-      <div class="bg-card rounded-xl p-4 shadow-sm">
+      <div class="bg-card hidden rounded-xl p-4 shadow-sm">
         <h3 class="font-medium mb-2">Prayer Journal</h3>
         <textarea placeholder="Add notes about this prayer..." 
           class="w-full p-3 bg-card rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent mb-3"></textarea>
@@ -191,27 +188,6 @@
   </div>
 
   <!-- Tab Bar -->
-  <div class="tab-bar">
-    <div class="tab-item active" onclick="showPage('main-page')">
-      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-      </svg>
-      <span class="text-xs mt-1">Prayers</span>
-    </div>
-    <div class="tab-item" onclick="alert('Analytics page would go here')">
-      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-      </svg>
-      <span class="text-xs mt-1">Analytics</span>
-    </div>
-    <div class="tab-item" onclick="alert('Settings page would go here')">
-      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-      </svg>
-      <span class="text-xs mt-1">Settings</span>
-    </div>
-  </div>
 
   <script>
     // Prayer data
@@ -232,20 +208,15 @@
       document.getElementById(pageId).classList.remove('hidden');
       
       // Update tab bar active state
-      document.querySelectorAll('.tab-item').forEach(item => {
-        item.classList.remove('active');
-      });
       
-      if (pageId === 'main-page') {
-        document.querySelectorAll('.tab-item')[0].classList.add('active');
-      }
     }
     
     // Render all prayers
     function renderPrayers() {
       const container = document.getElementById('prayers-container');
       container.innerHTML = '';
-      
+      prayers = JSON.parse(localStorage.getItem('prayers')) || [];
+      console.log('called')
       if (prayers.length === 0) {
         container.innerHTML = `
           <div class="text-center py-10 text-gray-400">
@@ -258,7 +229,8 @@
         `;
         return;
       }
-      
+            console.log('p0')
+
       prayers.forEach(prayer => {
         const prayerElement = document.createElement('div');
         prayerElement.className = 'prayer-card bg-card rounded-xl p-4 shadow-sm active:scale-95 transition-transform';
@@ -279,6 +251,8 @@
             </button>
           </div>
         `;
+console.log('f')
+
         container.appendChild(prayerElement);
       });
     }

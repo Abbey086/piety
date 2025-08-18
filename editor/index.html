@@ -1,115 +1,253 @@
 <!DOCTYPE html>
-<html lang="en" >
+<html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Quill Demo</title>
-  <link rel='stylesheet' href='assets/quill.snow.css'><link rel="stylesheet" href="style.css">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-</head>
-<body>
-
-<form action="" style="position: fixed;">
-  <input type="text" placeholder="Title"/>
-  <input type="text" placeholder="Preacher">
-  <input type="text" placeholder="Location">
-  <p style="color: red;"></p>
-  <button type="button" onclick="v(this)">Next</button>
-</form>
-<header width="100%">
-  <h2></h2>
-  <p></p>
-</header>
-<div ng-app="App" ng-controller="QuillController">
-   <div class="quill">
-<span class="contents" style="display: none;">{{quillContents}}</span>
-     <div class="editor">
-       <div id="editor"></div>
-     </div>
-   </div>
-</div>
-<!-- partial -->
-  <script src='assets/angular.min.js'></script>
-<script src='assets/quill.min.js'></script><script  src="./script.js"></script>
-
-<script>
-  function loadScript(src, onSuccess, onError) {
-    var script = document.createElement('script');
-    script.src = src;
-    script.onload = onSuccess;
-    script.onerror = onError || function() {
-      console.error('Failed to load script: ' + src);
-    };
-    document.head.appendChild(script);
-  }
-
-  // Load with fallbacks
-  loadScript('assets/angular.min.js', function() {
-    loadScript('assets/quill.min.js', function() {
-      loadScript('./script.js');
-    });
-  });
-</script>
-<script>
-const  save = () =>{
-   console.log('saving')
-   var i = document.querySelectorAll('form input');
-   var dateObject = new Date;
-   var t = i[0].value, p=i[1].value, l=i[2].value,d=dateObject.getDate()+'-'+(dateObject.getMonth()+1)+'-'+dateObject.getFullYear();
-   document.querySelector('header h2').innerHTML = t
-   document.querySelector('header p').innerHTML = `By ${p} on ${d}, ${l} [<sp>${id()}</sp>]`
-   var noteObject ={
-     title:t,
-     preacher:p,
-     location:l,
-     date:d,
-     notes:document.querySelector('.contents').innerText
-   }
-   localStorage.setItem('note'+id(),JSON.stringify(noteObject))
- }
-
-var iparam = location.search.substring(location.search.indexOf('=')+1)
-if(iparam.length >= 1){
-  var fp = JSON.parse(localStorage.getItem('note'+iparam))
-  var ff = document.querySelectorAll('form input');
-  ff[0].value = fp.title
-  ff[1].value = fp.preacher
-  ff[2].value = fp.location
-  setTimeout(function(){document.querySelector("body div.ql-editor").innerHTML += fp.notes
-},2400)
-}
-var e = document.querySelector('.quill .editor #editor .ql-editor')
-
-function v(j){
-     var i = document.querySelectorAll('form input');
-     var t = i[0].value.length > 1, p=i[1].value.length > 1, l=i[2].value.length > 1
-     
-     if(t && l && p){
-         j.form.style.display='none';
-          setInterval(save,1000)
-
-     }else{
-        document.querySelector('form p').innerText='invalid inputs';
-     }
-}
-function id() {
-  if(document.querySelector('header p sp')!=null){
-    return document.querySelector('header p sp').innerText
-  }
-  var count = 1;
-  for (i = 1; i <= localStorage.length; i++) {
-    if (localStorage.getItem('note' + i)) {
-      count++
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>iOS Style Notes</title>
+  <link rel='stylesheet' href='https://cdn.jsdelivr.net/npm/quill@2.0.1/dist/quill.snow.min.css'>
+  <script src='https://cdn.jsdelivr.net/npm/angular@1.8.2/angular.min.js'></script>
+  <script src='https://cdn.jsdelivr.net/npm/quill@2.0.1/dist/quill.min.js'></script>
+  <style>
+    :root {
+      --ios-blue: #007AFF;
+      --ios-gray: #F2F2F7;
+      --ios-dark-gray: #8E8E93;
+      --ios-red: #FF3B30;
+      --ios-separator: #C6C6C8;
     }
-  }
-  if(iparam.length > 0){
-    return iparam
-  }
-  return count
-}
+    
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    }
+    
+    body {
+      background-color: var(--ios-gray);
+      color: #333;
+      height: 100vh;
+      padding-bottom: 80px;
+    }
+    
+    .header-bar {
+      background-color: white;
+      padding: 12px 16px;
+      position: fixed;
+      top: 0;
+      width: 100%;
+      z-index: 100;
+      border-bottom: 1px solid var(--ios-separator);
+      box-shadow: 0 1px 5px rgba(0,0,0,0.05);
+    }
+    
+    .header-bar h1 {
+      font-size: 17px;
+      font-weight: 600;
+      text-align: center;
+    }
+    
+    .form-container {
+      background-color: white;
+      padding: 20px;
+      margin-top: 60px;
+      border-radius: 10px;
+      box-shadow: 0 1px 5px rgba(0,0,0,0.05);
+    }
+    
+    .ios-input {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 15px;
+      border: 1px solid var(--ios-separator);
+      border-radius: 8px;
+      font-size: 16px;
+    }
+    
+    .ios-textarea {
+      width: 100%;
+      height: 120px;
+      padding: 10px;
+      border: 1px solid var(--ios-separator);
+      border-radius: 8px;
+      font-size: 16px;
+      resize: none;
+    }
+    
+    .ios-button {
+      width: 100%;
+      padding: 12px;
+      background-color: var(--ios-blue);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+    
+    .ios-button:active {
+      background-color: #0063CE;
+    }
+    
+    .error-text {
+      color: var(--ios-red);
+      font-size: 14px;
+      margin-bottom: 15px;
+      text-align: center;
+    }
+    
+    .editor-container {
+      margin-top: 20px;
+      background-color: white;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 1px 5px rgba(0,0,0,0.05);
+    }
+    
+    #editor {
+      height: 300px;
+      border: none;
+    }
+    
+    .footer-bar {
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      background-color: white;
+      padding: 15px;
+      display: flex;
+      justify-content: space-between;
+      border-top: 1px solid var(--ios-separator);
+    }
+    
+    .footer-button {
+      background: none;
+      border: none;
+      color: var(--ios-blue);
+      font-size: 16px;
+      font-weight: 500;
+      cursor: pointer;
+    }
+    
+    .ios-separator {
+      border-top: 1px solid var(--ios-separator);
+      margin: 15px 0;
+    }
+  </style>
+</head>
+<body ng-app="App" ng-controller="QuillController">
+  <div class="header-bar">
+    <h1>New Note</h1>
+  </div>
+  
+  <div class="form-container">
+    <input type="text" class="ios-input" placeholder="Title" ng-model="note.title">
+    <input type="text" class="ios-input" placeholder="Preacher" ng-model="note.preacher">
+    <input type="text" class="ios-input" placeholder="Location" ng-model="note.location">
+    
+    <p class="error-text" ng-if="error">{{error}}</p>
+    
+    <button class="ios-button" ng-click="validateAndSave()">Create Note</button>
+  </div>
+  
+  <div class="editor-container" ng-if="showEditor">
+    <div id="editor" class="ql-container ql-snow">
+      <div class="ql-editor" ng-bind-html="quillContents"></div>
+    </div>
+  </div>
+  
+  <div class="footer-bar" ng-if="showEditor">
+    <button class="footer-button" ng-click="saveNote()">Save</button>
+    <button class="footer-button" ng-click="clearNote()">Clear</button>
+  </div>
 
-
-
-var ed = document.querySelector(".quill .editor #editor .ql-editor")
-</script>
+  <script>
+    angular.module('App', [])
+      .controller('QuillController', ['$scope', '$sce', function($scope, $sce) {
+        $scope.note = {
+          title: '',
+          preacher: '',
+          location: '',
+          content: '',
+          date: new Date()
+        };
+        $scope.error = '';
+        $scope.showEditor = false;
+        $scope.quill = null;
+        
+        // Load saved notes or initialize
+        const storedNotes = localStorage.getItem('iosNotes');
+        $scope.notes = storedNotes ? JSON.parse(storedNotes) : {};
+        
+        // Check for URL parameter to load specific note
+        const urlParams = new URLSearchParams(window.location.search);
+        const noteId = urlParams.get('id');
+        
+        if (noteId && $scope.notes[noteId]) {
+          $scope.note = $scope.notes[noteId];
+          $scope.showEditor = true;
+          setTimeout(initQuill, 0);
+        }
+        
+        function initQuill() {
+          if (!$scope.quill) {
+            $scope.quill = new Quill('#editor', {
+              theme: 'snow',
+              modules: {
+                toolbar: [
+                  ['bold', 'italic', 'underline', 'strike'],
+                  ['link', 'blockquote', 'code-block'],
+                  [{ 'header': 1 }, { 'header': 2 }],
+                  [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                  ['clean']
+                ]
+              }
+            });
+            
+            if ($scope.note.content) {
+              $scope.quill.setContents(JSON.parse($scope.note.content));
+            }
+          }
+        }
+        
+        $scope.validateAndSave = function() {
+          if (!$scope.note.title || !$scope.note.preacher || !$scope.note.location) {
+            $scope.error = 'Please fill all fields';
+            return;
+          }
+          
+          $scope.error = '';
+          $scope.showEditor = true;
+          setTimeout(initQuill, 0);
+        };
+        
+        $scope.saveNote = function() {
+          $scope.note.date = new Date();
+          $scope.note.content = JSON.stringify($scope.quill.getContents());
+          
+          // Generate a unique ID or use existing one
+          const id = noteId || Date.now().toString();
+          $scope.notes[id] = angular.copy($scope.note);
+          
+          localStorage.setItem('iosNotes', JSON.stringify($scope.notes));
+          
+          // Update URL if this is a new note
+          if (!noteId) {
+            window.history.pushState({}, '', `?id=${id}`);
+          }
+          
+          alert('Note saved successfully!');
+        };
+        
+        $scope.clearNote = function() {
+          if (confirm('Are you sure you want to clear this note?')) {
+            $scope.quill.setContents([]);
+            $scope.note.content = '';
+          }
+        };
+      }]);
+  </script>
 </body>
 </html>
