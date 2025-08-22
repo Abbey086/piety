@@ -4,9 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>iOS Style Notes</title>
-  <link rel='stylesheet' href='https://cdn.jsdelivr.net/npm/quill@2.0.1/dist/quill.snow.min.css'>
-  <script src='https://cdn.jsdelivr.net/npm/angular@1.8.2/angular.min.js'></script>
-  <script src='https://cdn.jsdelivr.net/npm/quill@2.0.1/dist/quill.min.js'></script>
+  <link rel='stylesheet' href='assets/quill.snow.css'>
+  <script src='assets/angular.min.js'></script>
+  <script src='assets/quill.min.js'></script>
   <style>
     :root {
       --ios-blue: #007AFF;
@@ -99,7 +99,7 @@
     }
     
     .editor-container {
-      margin-top: 20px;
+      position: fixed;
       background-color: white;
       border-radius: 10px;
       overflow: hidden;
@@ -113,11 +113,11 @@
     
     .footer-bar {
       position: fixed;
-      bottom: 0;
+      top: 0;
       width: 100%;
-      background-color: white;
       padding: 15px;
       display: flex;
+      z-index: 6644;
       justify-content: space-between;
       border-top: 1px solid var(--ios-separator);
     }
@@ -197,11 +197,10 @@
               theme: 'snow',
               modules: {
                 toolbar: [
-                  ['bold', 'italic', 'underline', 'strike'],
-                  ['link', 'blockquote', 'code-block'],
+                  ['bold', 'underline'],
+                  [ 'blockquote'],
                   [{ 'header': 1 }, { 'header': 2 }],
-                  [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-                  ['clean']
+                  [{ 'list': 'bullet' }]
                 ]
               }
             });
@@ -217,7 +216,11 @@
             $scope.error = 'Please fill all fields';
             return;
           }
-          
+          document.querySelector(".form-container").style.display="none"
+          setInterval(function (){
+            document.querySelector(".header-bar h1"). click ()
+          },500)
+
           $scope.error = '';
           $scope.showEditor = true;
           setTimeout(initQuill, 0);

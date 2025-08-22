@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta http-equiv="X-UA-Compatible" content="ie=edge" />
   <title>Amanda Piety Life</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="3.4.17.js"></script>
   <style>
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
@@ -123,7 +123,7 @@ const screens = [
         screenDiv.innerHTML = '';
         
         if (data.form) {
-          screenDiv.innerHTML = `
+                    screenDiv.innerHTML = `
             <div class="w-full max-w-sm mx-auto">
               <div class="bg-white rounded-3xl p-8 card-shadow relative overflow-hidden">
                 <div class="absolute top-4 right-4 w-8 h-8 bg-gradient-to-br from-yellow-400 to-orange-400 rounded-full floating-shape"></div>
@@ -145,6 +145,35 @@ const screens = [
                           class="w-full bg-gradient-to-r from-yellow-400 to-orange-400 text-white font-medium py-3 rounded-2xl shadow-lg active:scale-95 transition-transform">
                     Next →
                   </button>
+                </form>
+              </div>
+            </div>
+          `;
+          screenDiv.innerHTML = `
+            <div class="w-full max-w-sm mx-auto">
+              <div class="bg-white rounded-3xl p-8 card-shadow relative overflow-hidden">
+                <div class="absolute top-4 right-4 w-8 h-8 bg-gradient-to-br from-yellow-400 to-orange-400 rounded-full floating-shape"></div>
+                <div class="absolute top-12 left-4 w-4 h-4 bg-gradient-to-br from-blue-400 to-purple-400 rounded-full floating-shape"></div>
+                
+                <div class="text-center mb-6">
+                  <div class="w-16 h-16 bg-gradient-to-br from-blue-400 to-purple-500 rounded-2xl mx-auto mb-4 flex items-center justify-center icon-3d">
+                    <span class="text-2xl">👋</span>
+                  </div>
+                  <h1 class="text-2xl font-bold text-gray-800 mb-2">Welcome Back!</h1>
+                  <p class="text-gray-600 text-sm leading-relaxed">We kept your data while you were away. Enter the username and PIN to recover it!</p>
+                </div>
+                
+                <form id="nameForm" class="space-y-4">
+                  <input type="text" id="nameInput" placeholder="Your username" 
+                         class="w-full px-4 py-3 border border-gray-200 rounded-2xl text-gray-800 bg-gray-50 focus:bg-white transition-colors" required />
+                                           <input type="number" id="nameInput" placeholder="Access PIN" 
+                         class="w-full px-4 py-3 border border-gray-200 rounded-2xl text-gray-800 bg-gray-50 focus:bg-white transition-colors" required />
+                  <p id="errorMsg" class="text-red-500 text-sm hidden">Name must be more than 4 characters.</p>
+                  <button type="submit" 
+                          class="w-full bg-gradient-to-r from-yellow-400 to-orange-400 text-white font-medium py-3 rounded-2xl shadow-lg active:scale-95 transition-transform">
+                    Next →
+                  </button>
+                  <p onclick="newU()" class="text-center text-gradient-to-r from-yellow-400 to-orange-400 ">This is my first time</p>
                 </form>
               </div>
             </div>
@@ -219,7 +248,48 @@ const screens = [
         screenDiv.classList.add("fade-in");
       }, 300);
     }
+    
+    function newU(){
+      
+                    document.getElementById("screen").innerHTML = `
+            <div class="w-full max-w-sm mx-auto">
+              <div class="bg-white rounded-3xl p-8 card-shadow relative overflow-hidden">
+                <div class="absolute top-4 right-4 w-8 h-8 bg-gradient-to-br from-yellow-400 to-orange-400 rounded-full floating-shape"></div>
+                <div class="absolute top-12 left-4 w-4 h-4 bg-gradient-to-br from-blue-400 to-purple-400 rounded-full floating-shape"></div>
+                
+                <div class="text-center mb-6">
+                  <div class="w-16 h-16 bg-gradient-to-br from-blue-400 to-purple-500 rounded-2xl mx-auto mb-4 flex items-center justify-center icon-3d">
+                    <span class="text-2xl">👋</span>
+                  </div>
+                  <h1 class="text-2xl font-bold text-gray-800 mb-2">Welcome!</h1>
+                  <p class="text-gray-600 text-sm leading-relaxed">Let's personalize your experience. What should we call you?</p>
+                </div>
+                
+                <form id="nameForm" class="space-y-4">
+                  <input type="text" id="nameInput" placeholder="Your name" 
+                         class="w-full px-4 py-3 border border-gray-200 rounded-2xl text-gray-800 bg-gray-50 focus:bg-white transition-colors" required />
+                  <p id="errorMsg" class="text-red-500 text-sm hidden">Name must be more than 4 characters.</p>
+                  <button type="button"
+                  onclick="saveU()"
+                          class="w-full bg-gradient-to-r from-yellow-400 to-orange-400 text-white font-medium py-3 rounded-2xl shadow-lg active:scale-95 transition-transform">
+                    Next →
+                  </button>
+                </form>
+              </div>
+            </div>
+          `;
+          
 
+            
+    }
+function saveU(){
+var nameI =  document.getElementById('nameInput').value
+var user = {
+  name: nameI
+}
+localStorage.setItem('user',JSON.stringify(user))
+window.location.href = 'index.html'
+}
     function nextScreen() {
       if (currentScreen < screens.length - 1) {
         currentScreen++;

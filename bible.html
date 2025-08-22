@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Holy Bible - Modern Reader</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="3.4.17.js"></script>
   <script src="bible.js" type="text/javascript" charset="utf-8"></script>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap');
@@ -210,6 +210,12 @@
     <div class="fixed bottom-1/4 left-1/2 transform -translate-x-1/2 translate-y-full bg-gray-800 text-white px-4 py-2 rounded-lg shadow-lg z-50 opacity-0 transition-all duration-300 ease-out" id="toast">
       Message here
     </div>
+        <div class="fixed bottom-1/4 left-1/2 z-50" id="iframe">
+        <iframe class="fixed w-full h-full bg-white verser z-70 top-0 left-0 border-0  hidden" src="index.html"></iframe>
+        <button onclick="x()" class="fixed text-5xl hidden w-full text-right pr-4 z-70 top-3.5 left-0 ">×</button>
+
+    </div>
+
   </div>
 
   <script>
@@ -588,10 +594,19 @@ function loadFavorites() {
     // Other menu actions
     function saveVerseAsImage() {
       hideVerseMenu();
-      showToast('Verse saved as image (demo)');
-      // In a real implementation, you would use a library like html2canvas
-    }
+            const { reference, text } = currentVerseData;
+//document.body.innerHTML += `<iframe class="fixed w-full h-full bg-white verser  hidden z-70 top-0 left-0 border-0 " ></iframe>
+            document.querySelector("button.fixed").classList.remove("hidden")
 
+            document.querySelector(".verser").classList.remove("hidden")
+      document.querySelector(".verser").src = `resources/image.html?ref=${reference}&verse=${text}`
+    }
+function x(){
+  document.querySelector("button.fixed").classList.add("hidden")
+
+            document.querySelector(".verser").classList.add("hidden")
+
+}
     function shareVerse() {
       hideVerseMenu();
       const { reference, text } = currentVerseData;

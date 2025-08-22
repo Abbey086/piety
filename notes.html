@@ -83,42 +83,29 @@
 
       main.innerHTML = '';
 
-      for (let i = 1; i <= localStorage.length; i++) {
-        const key = 'note' + i;
-        const raw = localStorage.getItem(key);
-        if (raw) {
-          let noteObject = JSON.parse(raw);
-          if (noteObject.alive !== 'deleted') {
-            if (noteObject.favourite === undefined) noteObject.favourite = false;
-
-            const isFav = noteObject.favourite;
-
-            // Skip if in "fav" tab and note is not a favourite
-            if (currentTab === 'fav' && !isFav) continue;
-
+      var data = JSON.parse(localStorage.getItem("iosNotes"))
+    var id = 1755856955519
+      var noteObject = data[id]
             const template = `
-              <div class="note" onclick="window.location.href='editor/assets/viewer.html?i=${i}'" style="--bg:${isFav ? '#ffe' : '#efe'};--b:${isFav ? '#aa6' : '#6f6'}">
+              <div class="note" onclick="window.location.href='editor/assets/viewer.html?i=${id}'" style="--bg:${noteObject.isFav ? '#ffe' : '#efe'};--b:${noteObject.isFav ? '#aa6' : '#6f6'}">
                 <h3>${noteObject.title}</h3>
                 <p>By ${noteObject.preacher}</p>
                 <p>${noteObject.date} • ${noteObject.location}</p>
                 <p>
-                  <button type="button" onclick="event.stopPropagation(); window.location.href='editor/index.html?i=${i}'">Edit</button>
-                  <button type="button" onclick="event.stopPropagation(); toggleFavourite(${i})">${isFav ? 'Unfavourite' : 'Favourite'}</button>
-                  <button type="button" onclick="event.stopPropagation(); dlt(${i})">Delete</button>
+                  <button type="button" onclick="event.stopPropagation(); window.location.href='editor/index.html?i=${id}'">Edit</button>
+                  <button type="button" onclick="event.stopPropagation(); toggleFavourite(${id})">${noteObject.isFav ? 'Unfavourite' : 'Favourite'}</button>
+                  <button type="button" onclick="event.stopPropagation(); dlt(${id})">Delete</button>
                 </p>
               </div>`;
             
             main.innerHTML += template;
-          }
-        }
-      }
     }
-
     function toggleFavourite(index) {
-      const key = 'note' + index;
-      let note = JSON.parse(localStorage.getItem(key));
-      note.favourite = !note.favourite;
-      localStorage.setItem(key, JSON.stringify(note));
+      let notes = JSON.parse(localStorage.getItem('iosNotes'))
+      console.log(index)
+      let note = notes[index];
+      note.isFav = !note.isFav;
+      localStorage.setItem("iosNotes", JSON.stringify(note));
       read();
     }
 

@@ -69,7 +69,7 @@
 <body>
   <header>
     <div class="right">
-      <p>Praise The Living God,<br><span>Abby Mukiibi</span></p>
+      <p>Praise The Living God,<br><span id="nameD"></span></p>
     </div>
     <button onclick="window.location.href ='/editor/index.html'">New Note</button>
   </header>
@@ -99,6 +99,7 @@ Pie chart of answered to unanswered prayers
  <script src="bible.js" type="text/javascript" charset="utf-8"></script>
 
  <script>
+ document.getElementById('nameD').innerHTML = JSON.parse(localStorage.getItem('user')).name
 function generateVerseOfDay() {
   const today = new Date().toISOString().split('T')[0]; // e.g. "2025-07-22"
   const storedData = JSON.parse(localStorage.getItem("verseOfTheDay"));
@@ -136,36 +137,23 @@ function displayVerseOfTheDay(verseObj) {
 // Generate one when the page loads
 generateVerseOfDay();
    graph()
-   function today() {
-  const params = new URLSearchParams(window.location.search);
-  const d = params.get("d");
-  if (d) return d;
-
-  const now = new Date();
-  return `${now.getFullYear()}-${now.getMonth() + 1}-${now.getDate()}`;
-}
+  
+function getToday() {
+      const today = new Date();
+      return `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+    }
+    
 
 function graph(){
-    var totalPercentage = 0;  // To accumulate the total percentage progress
-    var habitCount = 0;  // To count the number of habits with progress data
-
-    for (i = 1; i <= localStorage.length; i++) {
-        if (localStorage.getItem('habit' + i)) {
-            var habitObject = JSON.parse(localStorage.getItem('habit' + i));
-            if (habitObject.progress[today()]) {
-                if (habitObject.alive) {
-                    var progress = habitObject.progress[today()];
-                    var frequency = habitObject.frequency;
-                    var percentage = (progress / frequency) * 100;  // Calculate percentage for this habit
-                    totalPercentage += percentage;  // Add it to the total percentage
-                    habitCount++;  // Increment the habit count
-                }
-            }
-        }
-    }
-
-    // Now calculate the average percentage across all habits
-    var averagePercentage = habitCount > 0 ? totalPercentage / habitCount : 0;
+const savedHabits = localStorage.getItem('habits');
+      habits = savedHabits ? JSON.parse(savedHabits) : [];
+    let total = 0
+      for(i=0;i<habits.length;i++){
+        var p = habits[i].completions[getToday()]/habits[i]. frequency 
+        total+=p
+      }
+    var averagePercentage = habits.length > 0 ? total * 100/ habits.length : 0;
+      console.log(averagePercentage)
 
     var options = {
         series: [averagePercentage],  // Use the average percentage for the chart

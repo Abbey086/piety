@@ -21,7 +21,7 @@
   position: fixed;
   
   display:flex;
-  justify-content: space-evenly;
+  justify-content: space-between;
   bottom: 18px;
   align-items: center;
   width: 90vw;
@@ -33,8 +33,8 @@
   fill: white;
 }
 .ql-snow.ql-toolbar span.ql-picker-label{
-  border:solid 2px white;
-  color: white;
+  border:solid 2px red;
+  color: red;
   margin-left: 18px;
   border-radius:5px;
 }
@@ -437,7 +437,7 @@
   
   padding: 3px 5px;
   width: 28px;
-  margin-top: 12px;
+  margin-block: 5px;
   vertical-align: center;
 }
 .ql-snow.ql-toolbar button.ql-bold,

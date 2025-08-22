@@ -61,6 +61,7 @@
       overflow-x: auto;
       gap: 8px;
       padding: 16px 8px;
+      flex-direction: row-reverse;
       -webkit-overflow-scrolling: touch;
     }
     
@@ -265,7 +266,7 @@
     </div>
     
     <form id="add-habit-form">
-      <input type="text" class="input-field" id="habit-name" placeholder="Habit name (e.g., Drink Water)" required>
+      <input type="text" class="input-field" id="habit-name" placeholder="Habit name (e.g., Read the bible)" required>
       
       <select class="input-field" id="habit-period" required>
         <option value="" disabled selected>Select period</option>
@@ -384,7 +385,6 @@
     function initDateSelector() {
       const container = document.getElementById('date-selector');
       container.innerHTML = '';
-      
       // Create 30 days worth of date boxes (today + 29 days back)
       for (let i = 29; i >= 0; i--) {
         const date = new Date();
@@ -409,7 +409,10 @@
         });
         
         container.appendChild(dateBox);
+        
       }
+            container.scrollLeft=-10000
+
     }
     
     // Habit management functions

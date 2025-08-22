@@ -6,7 +6,11 @@
 
       <!--=============== REMIXICONS ===============-->
       <link href="remixicon.css" rel="stylesheet">
-
+<script type="text/javascript" charset="utf-8">
+  if(!(JSON.parse(localStorage.getItem('user')))){
+    window.location.href='setup.html'
+  }
+</script>
       <!--=============== CSS ===============-->
 <style>
 /*=============== GOOGLE FONTS ===============*/
@@ -98,7 +102,7 @@ iframe{
 /*=============== NAVBAR ===============*/
 .nav {
   position: fixed;
-  bottom: 1.5rem;
+  bottom: .5rem;
   left: 0;
   right: 0;
   background-color: var(--black-color);

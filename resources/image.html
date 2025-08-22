@@ -49,24 +49,28 @@
     font-size: 1.25rem;
     opacity: 0.85;
   }
-
-  .bg-1 { background: linear-gradient(45deg, #667eea, #764ba2); }
+  .bg-1 { background-image:url("river.jpg");
+  background-size: 100%;
+  background-position: center;
+  }
   .bg-2 { background: linear-gradient(135deg, #ff9a9e, #fad0c4); color: #333; }
   .bg-3 { background: linear-gradient(45deg, #00c6ff, #0072ff); }
   .bg-4 { background: linear-gradient(60deg, #29323c, #485563); }
   .bg-5 { background: linear-gradient(45deg, #56ab2f, #a8e063); }
-  .bg-6 { background-image:url("still-life-crucifix-with-beads.jpg");
+  .bg-6 { background-image:url("drizzling.jpg");
   background-size: 100%;
   background-position: center;
-  backdrop-filter: brightness(0);
 
   }
-  .bg-7 { background: linear-gradient(135deg, #f5f7fa, #c3cfe2); color: #333; }
+    .bg-7 { background-image:url("grass.jpg");
+  background-size: 100%;
+  background-position: center;
+  }
   .bg-8 { background: linear-gradient(45deg, #fc5c7d, #6a82fb); }
   .bg-9 { background: radial-gradient(circle at center, #f9d423 0%, #ff4e50 100%); }
   .bg-10 { background: linear-gradient(45deg, #2c3e50, #4ca1af); }
 
-  select, button {
+  button {
     margin: 10px 8px;
     padding: 8px 14px;
     font-size: 1rem;
@@ -75,6 +79,17 @@
     outline: none;
     cursor: pointer;
   }
+    select {
+    margin: 3px;
+    padding: 6px 3px;
+    font-size: 1rem;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    outline: none;
+    cursor: pointer;
+    width:30%;
+  }
+
   button:hover {
     background-color: #ddd;
   }
@@ -83,12 +98,17 @@
 </head>
 <body>
 
-  <h1>Verse to Image Generator</h1>
+  <h1>Piety Life App</h1>
 
-  <textarea id="verse-input" rows="4" cols="40" placeholder="Type your verse here...">For God so loved the world that He gave His only begotten Son...</textarea><br/>
-  <input id="ref-input" type="text" placeholder="Reference (e.g. John 3:16)" value="John 3:16" style="width: 250px; padding: 8px; font-size: 1rem; margin: 10px auto; display: block; border-radius: 6px; border: 1px solid #ccc;" />
+  <textarea id="verse-input" rows="4" cols="40" style="display: none;" placeholder="Type your verse here...">For God so loved the world that He gave His only begotten Son...</textarea>
+  <input id="ref-input" type="text" placeholder="Reference (e.g. John 3:16)" value="John 3:16" style="width: 250px; padding: 8px; font-size: 1rem; margin: 10px auto; display: none; border-radius: 6px; border: 1px solid #ccc;" />
 
-  <div>
+  <div id="verse-container" class="bg-1" style="font-family: 'Roboto', sans-serif;">
+    <div id="verse-text">For God so loved the world that He gave His only begotten Son...</div>
+    <div id="verse-ref">John 3:16</div>
+    <div class="cp">Made from Piety Life App</div>
+  </div>
+  <div style="text-align: left;">
     <label for="font-select">Font:</label>
     <select id="font-select" aria-label="Choose font">
       <option value="Roboto">Roboto</option>
@@ -105,23 +125,17 @@
 
     <label for="background-select">Background:</label>
     <select id="background-select" aria-label="Choose background">
-      <option value="bg-1">Blue Purple</option>
+      <option value="bg-1">River</option>
       <option value="bg-2">Pink Pastel</option>
       <option value="bg-3">Blue Sky</option>
       <option value="bg-4">Dark Steel</option>
       <option value="bg-5">Green Fresh</option>
-      <option value="bg-6">Cross</option>
-      <option value="bg-7">Light Gray</option>
+      <option value="bg-6">Drizzling</option>
+      <option value="bg-7">Grass</option>
       <option value="bg-8">Pink Purple</option>
       <option value="bg-9">Yellow Red</option>
       <option value="bg-10">Teal Blue</option>
     </select>
-  </div>
-
-  <div id="verse-container" class="bg-1" style="font-family: 'Roboto', sans-serif;">
-    <div id="verse-text">For God so loved the world that He gave His only begotten Son...</div>
-    <div id="verse-ref">John 3:16</div>
-    <div class="cp">Made from Piety Life App</div>
   </div>
 
   <button onclick="downloadAsImage()">Download as JPG</button>
@@ -137,6 +151,11 @@
   const refInput = document.getElementById('ref-input');
 
   // Update verse text live
+          const urlParams = new URLSearchParams(window.location.search);
+
+  verseTextEl.textContent = urlParams.get("verse")
+  verseRefEl.textContent = urlParams.get("ref")
+  
   verseInput.addEventListener('input', () => {
     verseTextEl.textContent = verseInput.value || '';
   });
