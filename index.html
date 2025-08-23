@@ -1,369 +1,291 @@
 <!DOCTYPE html>
-   <html lang="en">
-   <head>
-      <meta charset="UTF-8">
-      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-      <!--=============== REMIXICONS ===============-->
-      <link href="remixicon.css" rel="stylesheet">
-<script type="text/javascript" charset="utf-8">
-  if(!(JSON.parse(localStorage.getItem('user')))){
-    window.location.href='setup.html'
-  }
-</script>
-      <!--=============== CSS ===============-->
-<style>
-/*=============== GOOGLE FONTS ===============*/
-@import url("https://fonts.googleapis.com/css2?family=Montserrat+Alternates:wght@400;600;700&display=swap");
+  <!--=============== REMIXICONS ===============-->
+  <link href="remixicon.css" rel="stylesheet">
 
-/*=============== VARIABLES CSS ===============*/
-:root {
-  /*========== Colors ==========*/
-  /*Color mode HSL(hue, saturation, lightness)*/
-  --first-color: hsl(225, 95%, 56%);
-  --black-color: hsl(225, 12%, 12%);
-  --white-color: hsl(0, 0%, 100%);
-  --text-color: hsl(225, 8%, 65%);
-  --body-color: hsl(225, 100%, 99%);
+  <script type="text/javascript" charset="utf-8">
+    if (!(JSON.parse(localStorage.getItem('user')))) {
+      window.location.href='setup.html'
+    }
+  </script>
 
-  /*========== Font and typography ==========*/
-  /*.5rem = 8px | 1rem = 16px ...*/
-  --body-font: "Montserrat Alternates", sans-serif;
-  --biggest-font-size: 2.5rem;
-  --tiny-font-size: .625rem;
+  <!--=============== CSS ===============-->
+  <style>
+  @import url("https://fonts.googleapis.com/css2?family=Montserrat+Alternates:wght@400;600;700&display=swap");
 
-  /*========== Font weight ==========*/
-  --font-regular: 400;
-  --font-semi-bold: 600;
-  --font-bold: 700;
-
-  /*========== z index ==========*/
-  --z-tooltip: 10;
-  --z-fixed: 100;
-}
-
-/*========== Responsive typography ==========*/
-@media screen and (min-width: 1150px) {
   :root {
-    --biggest-font-size: 3.5rem;
+    --first-color: hsl(225, 95%, 56%);
+    --black-color: hsl(225, 12%, 12%);
+    --white-color: hsl(0, 0%, 100%);
+    --text-color: hsl(225, 8%, 65%);
+    --body-color: hsl(225, 100%, 99%);
+    --body-font: "Montserrat Alternates", sans-serif;
+    --biggest-font-size: 2.5rem;
+    --tiny-font-size: .625rem;
+    --font-regular: 400;
+    --font-semi-bold: 600;
+    --font-bold: 700;
+    --z-tooltip: 10;
+    --z-fixed: 100;
   }
-}
 
-/*=============== BASE ===============*/
-* {
-  box-sizing: border-box;
-  padding: 0;
-  margin: 0;
-}
+  @media screen and (min-width: 1150px) {
+    :root { --biggest-font-size: 3.5rem; }
+  }
 
-html {
-  scroll-behavior: smooth;
-  height:100vh;
-}
+  * { box-sizing: border-box; padding: 0; margin: 0; }
+  html { scroll-behavior: smooth; height:100vh; }
+  body {
+    font-family: var(--body-font);
+    background-color: var(--body-color);
+    color: var(--text-color);
+    overflow: hidden;
+  }
+  ul { list-style: none; }
+  a { text-decoration: none; }
 
-body {
-  font-family: var(--body-font);
-  background-color: var(--body-color);
-  color: var(--text-color);
-  overflow: hidden;
-}
+  iframe {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100vh;
+    border: 0;
+  }
+  .iframe-container {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+  }
 
-ul {
-  list-style: none;
-}
-
-a {
-  text-decoration: none;
-}
-
-/*=============== REUSABLE CSS CLASSES ===============*/
-.container {
-  max-width: 1120px;
-  margin-inline: 1.5rem;
-}
-iframe{
-  postion:fixed;
-  width: 100%;
-  border: solid 2px ;
-  height:100vh;
-}
-/* Remove the property of 100vh, when inserting its content */
-.section {
-  height: 100vh;
-  padding-block: 2.5rem;
-}
-
-.section h1 {
-  font-size: var(--biggest-font-size);
-  color: var(--black-color);
-  text-align: center;
-}
-
-/*=============== NAVBAR ===============*/
-.nav {
-  position: fixed;
-  bottom: .5rem;
-  left: 0;
-  right: 0;
-  background-color: var(--black-color);
-  width: 88%;
-  margin-inline: auto;
-  box-shadow: 0 2px 16px hsla(228, 95%, 4%, .1);
-  padding: .75rem 1.75rem;
-  border-radius: 4rem;
-  z-index: var(--z-fixed);
-}
-
-.nav__list {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.nav__link {
-  text-align: center;
-  
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  
-  font-size: 1.5rem;
-  transition: color .4s;
-}
-
-.nav__list  li.active{
-  color: white;
-}
-.nav__link span{display: block;}
-/*=============== EXPAND LIST ===============*/
-.nav__expand {
-  border: none;
-  outline: none;
-  width: 40px;
-  height: 40px;
-  background-color: var(--first-color);
-  border-radius: 50%;
-  cursor: pointer;
-}
-
-.nav__expand-icon {
-  display: inline-block;
-  color: white;
-  font-size: 1.5rem;
-  transition: transform .4s;
-}
-
-.nav__expand-list {
-  position: absolute;
-  top: -4.5rem;
-  left: 0;
-  right: 0;
-  background-color: var(--black-color);
-  box-shadow: 0 2px 16px hsla(228, 95%, 4%, .1);
-  width: max-content;
-  margin-inline: auto;
-  padding: .5rem 1.5rem;
-  border-radius: 4rem;
-  display: flex;
-  column-gap: 2rem;
-  z-index: -1;
-  overflow: hidden;
-  transform: translateY(5rem) scale(.1);
-  transition: transform .5s cubic-bezier(.5, 1.8, .4, .8);
-}
-
-.nav__expand-list li {
-  transform: translateY(-3rem);
-  transition: transform .4s;
-}
-
-.nav__expand-list li:nth-child(1) {
-  transition-delay: .2s;
-}
-
-.nav__expand-list li:nth-child(2) {
-  transition-delay: .3s;
-}
-
-.nav__expand-list li:nth-child(3) {
-  transition-delay: .4s;
-}
-
-.nav__expand-link {
-  color: var(--text-color);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  transition: color .4s;
-}
-
-.nav__expand-link i {
-  font-size: 1.5rem;
-}
-
-.nav__expand-link span ,.nav__link span{
-  font-size: var(--tiny-font-size);
-  
-  font-weight: var(--font-semi-bold);
-}
-
-.nav__expand-link:hover {
-  color: var(--white-color);
-}
-
-/* Show list */
-.show-list,
-.show-list li{
-  transform: translateY(0);
-}
-
-/* Rotate icon */
-.rotate-icon {
-  transform: rotate(135deg);
-}
-
-/* Active link */
-.active-link {
-  color: var(--white-color);
-}
-
-/*=============== BREAKPOINTS ===============*/
-/* For medium devices */
-@media screen and (min-width: 450px) {
   .nav {
-    width: 350px;
-  }
-}
-
-/* For large devices */
-@media screen and (min-width: 1150px) {
-  .container {
+    position: fixed;
+    bottom: .5rem;
+    left: 0;
+    right: 0;
+    background-color: var(--black-color);
+    width: 88%;
     margin-inline: auto;
+    box-shadow: 0 2px 16px hsla(228, 95%, 4%, .1);
+    padding: .75rem 1.75rem;
+    border-radius: 4rem;
+    z-index: var(--z-fixed);
   }
-}
-.hero{
-  position: fixed;
-  inset:0;
-  z-index: 6666;
-  display: none;
-  background: grey;
-}
-.hero img:first-of-type{
-  object-fit: cover;
-  width: 100%;
-  height:100%;
-  filter: brightness(30%);
-}
-.hero .png{
+
+  .nav__list {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .nav__link {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    font-size: 1.5rem;
+    transition: color .4s;
+  }
+
+  .nav__list li.active { color: white; }
+  .nav__link span { display: block; }
+
+  .nav__expand {
+    border: none;
+    outline: none;
+    width: 40px;
+    height: 40px;
+    background-color: var(--first-color);
+    border-radius: 50%;
+    cursor: pointer;
+  }
+
+  .nav__expand-icon {
+    display: inline-block;
+    color: white;
+    font-size: 1.5rem;
+    transition: transform .4s;
+  }
+
+  .nav__expand-list {
+    position: absolute;
+    top: -4.5rem;
+    left: 0;
+    right: 0;
+    background-color: var(--black-color);
+    box-shadow: 0 2px 16px hsla(228, 95%, 4%, .1);
+    width: max-content;
+    margin-inline: auto;
+    padding: .5rem 1.5rem;
+    border-radius: 4rem;
+    display: flex;
+    column-gap: 2rem;
+    z-index: -1;
+    overflow: hidden;
+    transform: translateY(5rem) scale(.1);
+    transition: transform .5s cubic-bezier(.5, 1.8, .4, .8);
+  }
+
+  .nav__expand-list li {
+    transform: translateY(-3rem);
+    transition: transform .4s;
+  }
+
+  .nav__expand-list li:nth-child(1) { transition-delay: .2s; }
+  .nav__expand-list li:nth-child(2) { transition-delay: .3s; }
+  .nav__expand-list li:nth-child(3) { transition-delay: .4s; }
+
+  .nav__expand-link {
+    color: var(--text-color);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transition: color .4s;
+  }
+
+  .nav__expand-link i { font-size: 1.5rem; }
+
+  .nav__expand-link span, .nav__link span {
+    font-size: var(--tiny-font-size);
+    font-weight: var(--font-semi-bold);
+  }
+
+  .nav__expand-link:hover { color: var(--white-color); }
+  .show-list, .show-list li { transform: translateY(0); }
+  .rotate-icon { transform: rotate(135deg); }
+  .active-link { color: var(--white-color); }
+
+  @media screen and (min-width: 450px) {
+    .nav { width: 350px; }
+  }
+  </style>
+
+  <title>Fast Navbar App</title>
+</head>
+<body>
+
+  <!--=============== MAIN CONTENT ===============-->
+  <div class="iframe-container">
+    <iframe src="dashboard.html" id="iframe-0"></iframe>
+    <iframe src="habit.html" id="iframe-1" style="display:none"></iframe>
+    <iframe src="prayer.html" id="iframe-2" style="display:none"></iframe>
+    <iframe src="bible.html" id="iframe-3" style="display:none"></iframe>
+  </div>
+
+  <!--=============== NAVBAR ===============-->
+  <nav class="nav">
+    <ul class="nav__list">
+      <li class="active">
+        <a class="nav__link">
+          <i class="ri-home-smile-2-line"></i>
+          <span>Home</span>
+        </a>
+      </li>
+
+      <li>
+        <a class="nav__link">
+          <i class="ri-task-line"></i>
+          <span>Habits</span>
+        </a>
+      </li>
+
+      <li class="expander">
+        <button class="nav__expand" id="nav-expand">
+          <i class="ri-add-line nav__expand-icon" id="nav-expand-icon"></i>
+        </button>
+        <ul class="nav__expand-list" id="nav-expand-list">
+          <li onclick="showFrame(0); document.querySelector('#iframe-0').src='editor/index.html'">
+            <a class="nav__expand-link">
+              <i class="ri-file-3-line"></i>
+              <span>Notes</span>
+            </a>
+          </li>
+          <li onclick="showFrame(2); document.querySelector('#iframe-2').src='prayer.html?c'">
+            <a class="nav__expand-link">
+              <i class="ri-candle-line"></i>
+              <span>Prayer</span>
+            </a>
+          </li>
+          <li onclick="showFrame(1); document.querySelector('#iframe-1').src='habit.html?c'">
+            <a class="nav__expand-link">
+              <i class="ri-task-line"></i>
+              <span>Habit</span>
+            </a>
+          </li>
+        </ul>
+      </li>
+
+      <li>
+        <a class="nav__link">
+          <i class="ri-candle-line"></i>
+          <span>Prayers</span>
+        </a>
+      </li>
+
+      <li>
+        <a class="nav__link">
+          <i class="ri-book-2-line"></i>
+          <span>Bible</span>
+        </a>
+      </li>
+    </ul>
+  </nav>
+
+  <script>
+  /*=============== EXPANDED LIST ===============*/
+  const navExpand = document.getElementById('nav-expand'),
+    navExpandList = document.getElementById('nav-expand-list'),
+    navExpandIcon = document.getElementById('nav-expand-icon')
   
-  position: relative;
-  top: 40%;
-  left: 40%;
-}
-</style>
-      <title>Responsive navbar with expanded menu - Bedimcode</title>
-   </head>
-   <body>
-
-       <iframe src="dashboard.html" frameborder="0"></iframe>
-
-      <!--=============== NAVBAR ===============-->
-      <nav class="nav">
-         <ul class="nav__list">
-            <li class="active">
-               <a class="nav__link">
-                  <i class="ri-home-smile-2-line"></i>
-                  <span>Home</span>
-               </a>
-            </li>
-
-            <li>
-               <a class="nav__link">
-                  <i class="ri-task-line"></i>
-                  <span>Habits</span>
-               </a>
-            </li>
-
-            <!-- Expand list -->
-            <li class="expander">
-               <button class="nav__expand" id="nav-expand">
-                  <i class="ri-add-line nav__expand-icon" id="nav-expand-icon"></i>
-               </button>
-
-               <ul class="nav__expand-list" id="nav-expand-list">
-                  <li onclick="document.querySelector('iframe').src = 'editor/index.html'">
-                     <a class="nav__expand-link">
-                        <i class="ri-file-3-line"></i>
-                        <span>Notes</span>
-                     </a>
-                  </li>
-      
-                  <li onclick="document.querySelector('iframe').src = 'prayer.html?c'">
-                     <a class="nav__expand-link">
-                        <i class="ri-candle-line"></i>
-                        <span>Prayer</span>
-                     </a>
-                  </li>
-      
-                  <li onclick="document.querySelector('iframe').src = 'habit.html?c'">
-                     <a class="nav__expand-link" >
-                        <i class="ri-task-line"></i>
-                        <span>Habit</span>
-                     </a>
-                  </li>
-               </ul>
-            </li>
-         
-            <li>
-               <a class="nav__link">
-                  <i class="ri-candle-line"></i>
-                  <span>Prayers</span>
-               </a>
-            </li>
-
-            <li>
-               <a class="nav__link">
-                  <i class="ri-book-2-line"></i>
-                  <span>Bible</span>
-               </a>
-            </li>
-         </ul>
-      </nav>
-
-      <!--==================== MAIN ====================-->
-      <main class="container">
-       
-      </main>
-      
-      <!--=============== MAIN JS ===============-->
-      <script>
-         /*=============== EXPANDED LIST ===============*/
-
-const navExpand = document.getElementById('nav-expand'),
-
-      navExpandList = document.getElementById('nav-expand-list'),
-      navExpandIcon = document.getElementById('nav-expand-icon')
-
-navExpand.addEventListener('click', () => {
-   // Expand list
-   navExpandList.classList.toggle('show-list')
-
-   // Rotate icon
-   navExpandIcon.classList.toggle('rotate-icon')
-})
-
-/*=============== SCROLL SECTIONS ACTIVE LINK ===============*/
-for(i=0;i<4;i++){
-  document.querySelectorAll('.nav__list > li:not(.expander)')[i].setAttribute('onclick',`r(this,${i})`)
-}
-function r(e,id){
-  document.querySelector('.nav__list > li.active').classList.remove('active');
-  e.classList.add('active');
-  var links = ['dashboard.html','habit.html','prayer.html','bible.html']
-    document.querySelector('iframe').src=links[id]
-}
-
-
-      </script>
-   </body>
+  navExpand.addEventListener('click', () => {
+    navExpandList.classList.toggle('show-list')
+    navExpandIcon.classList.toggle('rotate-icon')
+  })
+  
+  // Switch visible iframe instantly
+  function showFrame(id) {
+    document.querySelectorAll('.iframe-container iframe').forEach((f, i) => {
+      f.style.display = (i === id) ? 'block' : 'none';
+    });
+  }
+  
+  // Map nav buttons explicitly (ignoring expander)
+  const navItems = [
+    { li: document.querySelectorAll('.nav__list > li')[0], id: 0 }, // Home
+    { li: document.querySelectorAll('.nav__list > li')[1], id: 1 }, // Habits
+    { li: document.querySelectorAll('.nav__list > li')[3], id: 2 }, // Prayers
+    { li: document.querySelectorAll('.nav__list > li')[4], id: 3 } // Bible
+  ]
+  
+  // Attach handlers
+  navItems.forEach(item => {
+    item.li.onclick = function() {
+      document.querySelector('.nav__list > li.active').classList.remove('active')
+      item.li.classList.add('active')
+      showFrame(item.id)
+    }
+  })
+  
+  // Expander quick links
+  document.querySelectorAll('#nav-expand-list li').forEach(li => {
+    li.onclick = () => {
+      const label = li.innerText.trim().toLowerCase()
+      if (label === 'notes') {
+        alert('Open Notes editor (separate page)')
+      }
+      if (label === 'prayer') {
+        // Open prayer frame + highlight nav
+        navItems[2].li.click()
+      }
+      if (label === 'habit') {
+        // Open habit frame + highlight nav
+        navItems[1].li.click()
+      }
+    }
+  })
+</script>
+</body>
 </html>

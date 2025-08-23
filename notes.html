@@ -9,55 +9,105 @@
       box-sizing: border-box;
       margin: 0;
       padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     }
+
+    body {
+      background: #f5f5f7;
+      color: #111;
+      line-height: 1.4;
+    }
+
     header {
       position: sticky;
       top: 0;
-      background: #fff;
-      padding: 12px;
       display: flex;
-      gap: 10px;
-      border-bottom: 1px solid #ccc;
+      justify-content: center;
+      gap: 12px;
+      padding: 10px;
+      background: rgba(255, 255, 255, 0.8);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(0,0,0,0.1);
       z-index: 10;
     }
+
     header button {
-      padding: 8px 16px;
+      padding: 8px 20px;
       border: none;
-      border-radius: 6px;
-      background: #ddd;
+      border-radius: 20px;
+      font-size: 0.95rem;
+      background: #e5e5ea;
       cursor: pointer;
+      transition: background 0.2s;
     }
+
     header button.active {
-      background: #4caf50;
+      background: #007aff;
       color: white;
     }
+
+    main {
+      padding: 8px;
+    }
+
     .note {
-      background: var(--bg);
+      background: #fff;
       border-radius: 12px;
-      padding: 6px;
-      border: solid 1px var(--b);
-      margin: 12px;
+      padding: 16px;
+      margin: 12px 0;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+      transition: transform 0.1s ease-in-out;
     }
+
+    .note:active {
+      transform: scale(0.98);
+    }
+
     .note h3 {
-      margin: 0;
-      padding: 16px 0;
-      font-size: 1.55rem;
+      margin-bottom: 6px;
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: #111;
     }
+
     .note p {
-      font-size: 1rem;
-      padding: 3px 0;
-      margin: 0;
-      color: #455;
+      margin: 4px 0;
+      font-size: 0.95rem;
+      color: #555;
+    }
+
+    .note-actions {
+      margin-top: 10px;
+      display: flex;
+      gap: 8px;
+    }
+
+    .note-actions button {
+      flex: 1;
+      padding: 8px 12px;
+      font-size: 0.85rem;
+      border: none;
+      border-radius: 10px;
+      background: #f2f2f7;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .note-actions button:hover {
+      background: #e5e5ea;
+    }
+
+    .note-actions button.primary {
+      background: #007aff;
+      color: white;
     }
   </style>
 </head>
 <body>
-
   <header>
     <button id="allBtn">All</button>
     <button id="favBtn">Favorites</button>
   </header>
-
   <main></main>
 
   <script>
@@ -76,52 +126,77 @@
       window.location.href = url.toString();
     }
 
+    function getNotes() {
+      return JSON.parse(localStorage.getItem("iosNotes")) || {};
+    }
+
+    function saveNotes(notes) {
+      localStorage.setItem("iosNotes", JSON.stringify(notes));
+    }
+
     function read() {
       const currentTab = getTab();
       allBtn.classList.toggle('active', currentTab === 'all');
       favBtn.classList.toggle('active', currentTab === 'fav');
 
       main.innerHTML = '';
+      const data = getNotes();
+console.log(data)
+      Object.keys(data).forEach(id => {
+        const note = data[id];
+        if (currentTab === "fav" && !note.isFav) return;
 
-      var data = JSON.parse(localStorage.getItem("iosNotes"))
-    var id = 1755856955519
-      var noteObject = data[id]
-            const template = `
-              <div class="note" onclick="window.location.href='editor/assets/viewer.html?i=${id}'" style="--bg:${noteObject.isFav ? '#ffe' : '#efe'};--b:${noteObject.isFav ? '#aa6' : '#6f6'}">
-                <h3>${noteObject.title}</h3>
-                <p>By ${noteObject.preacher}</p>
-                <p>${noteObject.date} • ${noteObject.location}</p>
-                <p>
-                  <button type="button" onclick="event.stopPropagation(); window.location.href='editor/index.html?i=${id}'">Edit</button>
-                  <button type="button" onclick="event.stopPropagation(); toggleFavourite(${id})">${noteObject.isFav ? 'Unfavourite' : 'Favourite'}</button>
-                  <button type="button" onclick="event.stopPropagation(); dlt(${id})">Delete</button>
-                </p>
-              </div>`;
-            
-            main.innerHTML += template;
+        const template = `
+          <div class="note" onclick="window.location.href='editor/assets/viewer.html?i=${id}'">
+            <h3>${note.title}</h3>
+            <p>By ${note.preacher}</p>
+            <p>${new Date(note.date).toLocaleDateString()} • ${note.location}</p>
+            <div class="note-actions">
+              <button type="button" onclick="event.stopPropagation(); window.location.href='editor/index.html?i=${id}'">Edit</button>
+              <button type="button" class="primary" onclick="event.stopPropagation(); toggleFavourite(${id})">${note.isFav ? 'Unfavourite' : 'Favourite'}</button>
+              <button type="button" onclick="event.stopPropagation(); dlt(${id})">Delete</button>
+            </div>
+          </div>`;
+
+        main.innerHTML += template;
+      });
     }
-    function toggleFavourite(index) {
-      let notes = JSON.parse(localStorage.getItem('iosNotes'))
-      console.log(index)
-      let note = notes[index];
-      note.isFav = !note.isFav;
-      localStorage.setItem("iosNotes", JSON.stringify(note));
+
+    function toggleFavourite(id) {
+      const notes = getNotes();
+      if (!notes[id]) return;
+      notes[id].isFav = !notes[id].isFav;
+      saveNotes(notes);
       read();
     }
 
-    function dlt(index) {
-      const key = 'note' + index;
-      let note = JSON.parse(localStorage.getItem(key));
-      note.alive = 'deleted';
-      localStorage.setItem(key, JSON.stringify(note));
+    function dlt(id) {
+      const notes = getNotes();
+      delete notes[id];
+      saveNotes(notes);
       read();
     }
 
     allBtn.onclick = () => setTab('all');
     favBtn.onclick = () => setTab('fav');
 
+    // create dummy note if none exists
+    if (!localStorage.getItem("iosNotes")) {
+      const id = Date.now();
+      const dummy = {
+        title: "Welcome Note",
+        preacher: "System",
+        location: "Local",
+        content: "Hello world",
+        date: new Date().toISOString(),
+        isFav: false
+      };
+      const notes = {};
+      notes[id] = dummy;
+      saveNotes(notes);
+    }
+
     read();
   </script>
-
 </body>
 </html>
