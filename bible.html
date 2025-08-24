@@ -5,6 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Holy Bible - Modern Reader</title>
   <script src="3.4.17.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto&family=Playfair+Display&family=Indie+Flower&family=Lobster&family=Montserrat&family=Pacifico&family=Open+Sans&family=Raleway&family=Merriweather&family=Oswald&display=swap" rel="stylesheet" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
   <script src="bible.js" type="text/javascript" charset="utf-8"></script>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap');
@@ -62,6 +65,78 @@
         opacity: 0;
       }
     }
+  
+.verser  #verse-container {
+    width: 360px;
+    height: 360px;
+    margin: auto;
+    padding: 30px;
+    color: white;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    box-sizing: border-box;
+    user-select: none;
+  }
+.verser .cp{
+  position: absolute;
+  bottom:15px;
+}
+.verser  #verse-text {
+    font-size: 1.5rem;
+    line-height: 1.4;
+    max-width: 90%;
+  }
+
+.verser  #verse-ref {
+    margin-top: 20px;
+    font-weight: 700;
+    font-size: 1.25rem;
+    opacity: 0.85;
+  }
+  .bg-1 { background-image:url("resources/river.jpg");
+  background-size: 100%;
+  background-position: center;
+  }
+  .bg-2 { background: linear-gradient(135deg, #ff9a9e, #fad0c4); color: #333; }
+  .bg-3 { background: linear-gradient(45deg, #00c6ff, #0072ff); }
+  .bg-4 { background: linear-gradient(60deg, #29323c, #485563); }
+  .bg-5 { background: linear-gradient(45deg, #56ab2f, #a8e063); }
+  .bg-6 { background-image:url("resources/drizzling.jpg");
+  background-size: 100%;
+  background-position: center;
+
+  }
+    .bg-7 { background-image:url("resources/grass.jpg");
+  background-size: 100%;
+  background-position: center;
+  }
+  .bg-8 { background: linear-gradient(45deg, #fc5c7d, #6a82fb); }
+  .bg-9 { background: radial-gradient(circle at center, #f9d423 0%, #ff4e50 100%); }
+  .bg-10 { background: linear-gradient(45deg, #2c3e50, #4ca1af); }
+
+ .verser button {
+    margin: 10px 8px;
+    padding: 8px 14px;
+    font-size: 1rem;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    outline: none;
+    cursor: pointer;
+  }
+  .verser  select {
+    margin: 3px;
+    padding: 6px 3px;
+    font-size: 1rem;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    outline: none;
+    cursor: pointer;
+    width:30%;
+  } 
   </style>
 </head>
 <body class="bg-gray-50">
@@ -211,8 +286,52 @@
       Message here
     </div>
         <div class="fixed bottom-1/4 left-1/2 z-50" id="iframe">
-        <iframe class="fixed w-full h-full bg-white verser z-70 top-0 left-0 border-0  hidden" src="index.html"></iframe>
-        <button onclick="x()" class="fixed text-5xl hidden w-full text-right pr-4 z-70 top-3.5 left-0 ">×</button>
+        <div class="fixed w-full h-full bg-white verser hidden z-70 top-0 left-0 border-0">
+            <h1 class="text-center text-2xl font-bold py-4">Save verse as an image</h1>
+
+  <textarea id="verse-input" rows="4" cols="40" style="display: none;" placeholder="Type your verse here...">For God so loved the world that He gave His only begotten Son...</textarea>
+  <input id="ref-input" type="text" placeholder="Reference (e.g. John 3:16)" value="John 3:16" style="width: 250px; padding: 8px; font-size: 1rem; margin: 10px auto; display: none; border-radius: 6px; border: 1px solid #ccc;" />
+
+  <div id="verse-container" class="bg-1" style="font-family: 'Roboto', sans-serif;">
+    <div id="verse-text">For God so loved the world that He gave His only begotten Son...</div>
+    <div id="verse-ref">John 3:16</div>
+    <div class="cp">Made from Piety Life App</div>
+  </div>
+  <div style="text-align: left;">
+    <label for="font-select">Font:</label>
+    <select id="font-select" aria-label="Choose font">
+      <option value="Roboto">Roboto</option>
+      <option value="Playfair Display">Playfair Display</option>
+      <option value="Indie Flower">Indie Flower</option>
+      <option value="Lobster">Lobster</option>
+      <option value="Montserrat">Montserrat</option>
+      <option value="Pacifico">Pacifico</option>
+      <option value="Open Sans">Open Sans</option>
+      <option value="Raleway">Raleway</option>
+      <option value="Merriweather">Merriweather</option>
+      <option value="Oswald">Oswald</option>
+    </select>
+
+    <label for="background-select">Background:</label>
+    <select id="background-select" aria-label="Choose background">
+      <option value="bg-1">River</option>
+      <option value="bg-2">Pink Pastel</option>
+      <option value="bg-3">Blue Sky</option>
+      <option value="bg-4">Dark Steel</option>
+      <option value="bg-5">Green Fresh</option>
+      <option value="bg-6">Drizzling</option>
+      <option value="bg-7">Grass</option>
+      <option value="bg-8">Pink Purple</option>
+      <option value="bg-9">Yellow Red</option>
+      <option value="bg-10">Teal Blue</option>
+    </select>
+  </div>
+
+  <button onclick="downloadAsImage()">Download as JPG</button>
+  <button onclick="shareVerseImage()">Share as JPG</button>
+
+        </div>
+        <button onclick="x()" class="fixed text-5xl hidden w-full text-right pr-4 z-70 top-1.5 left-0 ">×</button>
 
     </div>
 
@@ -599,7 +718,9 @@ function loadFavorites() {
             document.querySelector("button.fixed").classList.remove("hidden")
 
             document.querySelector(".verser").classList.remove("hidden")
-      document.querySelector(".verser").src = `resources/image.html?ref=${reference}&verse=${text}`
+      document.querySelector("#verse-ref"). textContent =reference
+      document.querySelector("#verse-text"). textContent =text
+
     }
 function x(){
   document.querySelector("button.fixed").classList.add("hidden")
@@ -657,6 +778,90 @@ function x(){
         toast.classList.add('translate-y-full', 'opacity-0');
       }, 2000);
     }
+    
+    
+    
+  const verseContainer = document.getElementById('verse-container');
+  const verseTextEl = document.getElementById('verse-text');
+  const verseRefEl = document.getElementById('verse-ref');
+  const fontSelect = document.getElementById('font-select');
+  const bgSelect = document.getElementById('background-select');
+  const verseInput = document.getElementById('verse-input');
+  const refInput = document.getElementById('ref-input');
+
+  // Update verse text live
+          const urlParams = new URLSearchParams(window.location.search);
+
+  verseInput.addEventListener('input', () => {
+    verseTextEl.textContent = verseInput.value || '';
+  });
+async function shareVerseImage() {
+  try {
+    const canvas = await html2canvas(document.getElementById('verse-container'), { backgroundColor: null, scale: 2 });
+    
+    // Convert canvas to blob (JPEG)
+    canvas.toBlob(async (blob) => {
+      if (!navigator.canShare || !navigator.canShare({ files: [new File([blob], 'verse.jpg', { type: blob.type })] })) {
+        alert('Sharing not supported on this device/browser.');
+        return;
+      }
+
+      const file = new File([blob], 'verse.jpg', { type: blob.type });
+      try {
+        await navigator.share({
+          files: [file],
+          title: 'Verse Image',
+          text: 'Check out this verse image!',
+        });
+      } catch (err) {
+        console.error('Share failed:', err);
+      }
+    }, 'image/jpeg', 0.95);
+
+  } catch (err) {
+    console.error('Error creating image for sharing:', err);
+  }
+}
+
+  // Update reference live
+  refInput.addEventListener('input', () => {
+    verseRefEl.textContent = refInput.value || '';
+  });
+
+  // Change font
+  fontSelect.addEventListener('change', () => {
+    verseContainer.style.fontFamily = `'${fontSelect.value}', sans-serif`;
+  });
+
+  // Change background
+  bgSelect.addEventListener('change', () => {
+    verseContainer.className = ''; // clear classes
+    verseContainer.classList.add(bgSelect.value);
+  });
+
+  // Download function using html2canvas
+  function downloadAsImage() {
+    html2canvas(verseContainer, {backgroundColor: null, scale: 2}).then(canvas => {
+      // Convert to JPEG (white background)
+      const jpegCanvas = document.createElement('canvas');
+      jpegCanvas.width = canvas.width;
+      jpegCanvas.height = canvas.height;
+      const ctx = jpegCanvas.getContext('2d');
+
+      // Fill white background (optional)
+      ctx.fillStyle = 'white';
+      ctx.fillRect(0, 0, jpegCanvas.width, jpegCanvas.height);
+
+      // Draw original canvas on top
+      ctx.drawImage(canvas, 0, 0);
+
+      const link = document.createElement('a');
+      link.download = 'verse-image.jpg';
+      link.href = jpegCanvas.toDataURL('image/jpeg', 0.95);
+      link.click();
+    });
+  }
+
   </script>
 </body>
 </html>
