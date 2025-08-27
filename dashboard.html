@@ -127,18 +127,48 @@
       box-shadow: var(--shadow);
       padding: 10px;
     }
+    .nb{
+      position: relative;
+      top:0px;
+            animation: bmc 1000ms ease-in-out;
+
+    }
+    .nb button {
+      display: none;
+    }
+    @keyframes bmc{
+      0%{
+        top:0;
+      }
+      58%{
+        top:-60px;
+      }
+      100%{
+        top: 0;
+}
+    }
+    .nb .message{
+      display: inline;
+      text-align: right;
+      max-lines: 2;
+      
+      max-width: 70vw;
+    }
+    .message{display: none;text-align: right;max-width: 70vw;
+}
   </style>
 </head>
-<body>
+<body onload="message ('Have you backed up your data?')">
 
   <header>
-    <div>
+    <div style="width: 30vw">
       <p> Praise God, <span id="nameD"></span></p>
     </div>
     <div class="header-actions">
       <button class="btn btn-primary" onclick="window.location.href='/editor/index.html'">New Note</button>
       <button class="btn btn-accent" onclick="backupData()">Back Up</button>
       <button class="btn btn-primary" onclick="donate()">Donate</button>
+      <p class="message">that makes sense to have someone who just care</p>
     </div>
   </header>
 
@@ -195,6 +225,7 @@ function graph(){
                         fontSize: '34px',  
                         color: undefined,  
                         formatter: function (val) {  
+                         setTimeout(()=>{ val.toFixed(0)==0?message("Remember to record your habit performance"):''},10000)
                             return val.toFixed(0) + "%";  // Display with 2 decimal places  
                         }  
                     }  
@@ -265,21 +296,270 @@ function renderNoteCard(note) {
 }
 
 function backupData() {
-  const notes = localStorage.getItem("iosNotes") || "{}";
-  const blob = new Blob([notes], {type: "application/json"});
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = "notes-backup.json";
-  a.click();
-  URL.revokeObjectURL(url);
-}
+ location.href='backup.html'}
+
 
 function donate() {
-  alert("Thank you for considering donating 🙏. (Here you could redirect to PayPal/Stripe link)");
-}
+ location.href='donate.html'}
 
+function message(v=''){
+  if(v.length != ''){
+  var ha = document.querySelector('.header-actions')
+  var messageEl = document.querySelector('.header-actions .message')
+    var btns = document.querySelectorAll('.header-actions button')
+messageEl.textContent=v
+  ha.classList.add('nb')
+
+  
+  Object.keys(btns).map(key=>
+    
+    btns[key].style.display='inline'
+  )
+  messageEl.style.display='none'
+  setTimeout(function (){
+      messageEl.style.display='inline'
+      Object.keys(btns).map(key=>
+    
+    btns[key].style.display='none'
+)
+  },500)
+    
+      setTimeout(function (){
+        message()  },4000)
+
+  }
+  else{
+  var ha = document.querySelector('.header-actions')
+  var messageEl = document.querySelector('.header-actions .message')
+    var btns = document.querySelectorAll('.header-actions button')
+//messageEl.textContent=v
+  ha.classList.remove('nb')
+  ha.classList.add('nb')
+
+  
+  /*Object.keys(btns).map(key=>
+    
+    btns[key].style.display='inline'
+  )
+  messageEl.style.display='none'*/
+  setTimeout(function (){
+      messageEl.style.display='none'
+      Object.keys(btns).map(key=>
+    
+    btns[key].style.display='inline'
+)
+  },500)}
+    setTimeout(function (){
+
+  ha.classList.remove('nb')
+  },1000)
+  
+
+}
 loadNotes();
 </script>
+
+
+
+
+    <nav class="nav">   <link rel="stylesheet" href="remixicon.css">
+
+  <script type="text/javascript" charset="utf-8">
+    if (!(JSON.parse(localStorage.getItem('user')))) {
+      window.location.href='setup.html'
+    }
+  </script>
+  <style>
+
+  :root {
+    --first-color: hsl(225, 95%, 56%);
+    --black-color: hsl(225, 12%, 12%);
+    --white-color: hsl(0, 0%, 100%);
+    --text-color: hsl(225, 8%, 65%);
+    --body-color: hsl(225, 100%, 99%);
+    --body-font: "Montserrat Alternates", sans-serif;
+    --biggest-font-size: 2.5rem;
+    --tiny-font-size: .625rem;
+    --font-regular: 400;
+    --font-semi-bold: 600;
+    --font-bold: 700;
+    --z-tooltip: 10;
+    --z-fixed: 100;
+  }
+  .nav ul { list-style: none; }
+.nav  * { box-sizing: border-box; padding: 0; margin: 0; }
+  .nav a { text-decoration: none; }
+
+  .nav {
+        color: var(--text-color);
+
+    position: fixed;
+    bottom: .5rem;
+    left: 0;
+    right: 0;
+    background-color: var(--black-color);
+    width: 88vw;
+    box-sizing: border-box;
+    margin-inline: auto;
+    box-shadow: 0 2px 16px hsla(228, 95%, 4%, .1);
+    padding: .75rem 1.75rem;
+    border-radius: 4rem;
+    z-index: var(--z-fixed);
+  }
+
+  .nav__list {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .nav__link {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    font-size: 1.5rem;
+    transition: color .4s;
+  }
+
+  .nav__list li.active { color: white; }
+  .nav__link span { display: block; }
+
+  .nav__expand {
+    border: none;
+    outline: none;
+    width: 40px;
+    height: 40px;
+    background-color: var(--first-color);
+    border-radius: 50%;
+    cursor: pointer;
+  }
+
+  .nav__expand-icon {
+    display: inline-block;
+    color: white;
+    font-size: 1.5rem;
+    transition: transform .4s;
+  }
+
+  .nav__expand-list {
+    position: absolute;
+    top: -4.5rem;
+    left: 0;
+    right: 0;
+    background-color: var(--black-color);
+    box-shadow: 0 2px 16px hsla(228, 95%, 4%, .1);
+    width: max-content;
+    margin-inline: auto;
+    padding: .5rem 1.5rem;
+    border-radius: 4rem;
+    display: flex;
+    column-gap: 2rem;
+    z-index: -1;
+    overflow: hidden;
+    transform: translateY(5rem) scale(.1);
+    transition: transform .5s cubic-bezier(.5, 1.8, .4, .8);
+  }
+
+  .nav__expand-list li {
+    transform: translateY(-3rem);
+    transition: transform .4s;
+  }
+
+  .nav__expand-list li:nth-child(1) { transition-delay: .2s; }
+  .nav__expand-list li:nth-child(2) { transition-delay: .3s; }
+  .nav__expand-list li:nth-child(3) { transition-delay: .4s; }
+
+  .nav__expand-link {
+    color: var(--text-color);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transition: color .4s;
+  }
+
+  .nav__expand-link i { font-size: 1.5rem; }
+
+  .nav__expand-link span, .nav__link span {
+    font-size: var(--tiny-font-size);
+    font-weight: var(--font-semi-bold);
+  }
+
+  .nav__expand-link:hover { color: var(--white-color); }
+  .show-list, .show-list li { transform: translateY(0); }
+  .rotate-icon { transform: rotate(135deg); }
+  .active-link { color: var(--white-color); }
+
+  @media screen and (min-width: 450px) {
+    .nav { width: 350px; }
+  }
+  </style>
+    <ul class="nav__list">
+      <li class="active" onclick="location.href='dashboard.html'">
+        <a class="nav__link">
+          <i class="ri-home-smile-2-line"></i>
+          <span>Home</span>
+        </a>
+      </li>
+
+      <li onclick="location.href='habit.html'">
+        <a class="nav__link">
+          <i class="ri-task-line"></i>
+          <span>Habits</span>
+        </a>
+      </li>
+
+      <li class="expander">
+        <button class="nav__expand" id="nav-expand">
+          <i class="ri-add-line nav__expand-icon" id="nav-expand-icon"></i>
+        </button>
+        <ul class="nav__expand-list" id="nav-expand-list">
+          <li onclick="location.href='notes.html'">
+            <a class="nav__expand-link">
+              <i class="ri-file-3-line"></i>
+              <span>Notes</span>
+            </a>
+          </li>
+          <li onclick="location.href='habit.html'">
+            <a class="nav__expand-link">
+              <i class="ri-candle-line"></i>
+              <span>Prayer</span>
+            </a>
+          </li>
+          <li onclick="location.href='habit.html'">
+            <a class="nav__expand-link">
+              <i class="ri-task-line"></i>
+              <span>Habit</span>
+            </a>
+          </li>
+        </ul>
+      </li>
+
+      <li onclick="location.href='prayer.html'">
+        <a class="nav__link">
+          <i class="ri-candle-line"></i>
+          <span>Prayers</span>
+        </a>
+      </li>
+
+      <li onclick="location.href='bible.html'">
+        <a class="nav__link">
+          <i class="ri-book-2-line"></i>
+          <span>Bible</span>
+        </a>
+      </li>
+    </ul>
+  <script>
+  const navExpand = document.getElementById('nav-expand'),
+    navExpandList = document.getElementById('nav-expand-list'),
+    navExpandIcon = document.getElementById('nav-expand-icon')
+  
+  navExpand.addEventListener('click', () => {
+    navExpandList.classList.toggle('show-list')
+    navExpandIcon.classList.toggle('rotate-icon')
+  })
+  
+</script>
+</nav>
 </body>
 </html>

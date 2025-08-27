@@ -198,7 +198,7 @@ const screens = [
                   </div>
                 </div>
               `;
-                      window.location.href= 'index.html'
+                      window.location.href= 'dashboard.html'
 
             } else {
               errorMsg.classList.remove("hidden");
@@ -288,7 +288,7 @@ var user = {
   name: nameI
 }
 localStorage.setItem('user',JSON.stringify(user))
-window.location.href = 'index.html'
+window.location.href = 'dashboard.html'
 }
     function nextScreen() {
       if (currentScreen < screens.length - 1) {
@@ -296,7 +296,7 @@ window.location.href = 'index.html'
         renderScreen(currentScreen);
       }
       else{
-        window.location.href= 'index.html'
+        window.location.href= 'dashboard.html'
       }
     }
 

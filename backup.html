@@ -1,24 +1,227 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title></title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Backup</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: #fff;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .card {
+      background: #fff;
+      border-radius: 20px;
+      padding: 20px 8px;
+      width: 90%;
+      box-sizing: border-box;
+      text-align: center;
+    }
+    h2 {
+      margin: 0 0 12px;
+      font-size: 28px;
+      font-weight: 800;
+      color: #111;
+    }
+    p {
+      margin: 0 0 20px;
+      color: #555;
+      font-size: 15px;
+    }
+    input {
+      width: 90%;
+      padding: 14px 16px;
+      margin-bottom: 14px;
+      border: 1px solid #d1d1d6;
+      border-radius: 12px;
+      font-size: 16px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    input:focus {
+      border-color: #007aff;
+    }
+    .btn {
+      width: 100%;
+      padding: 14px 16px;
+      font-size: 16px;
+      font-weight: 600;
+      border: none;
+      border-radius: 12px;
+      background: #007aff;
+      color: white;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    .btn:active {
+      background: #005ecb;
+    }
+    .secondary {
+      background: #f2f2f7;
+      color: #007aff;
+      border: 1px solid #d1d1d6;
+    }
+    .secondary:active {
+      background: #e6e6eb;
+    }
+  </style>
 </head>
-
 <body>
+
+<div class="card">
+  <h2>Cloud Backup</h2>
+  <p>Secure your notes, prayers & habits in the cloud. Restore anytime with your username + pin.</p>
   
+  <input type="text" id="username" placeholder="Username (no spaces)">
+  <input type="password" id="pin" placeholder="4-digit PIN">
   
+  <button class="btn" onclick="startBackup()">Backup Now</button>
+  <br><br>
+</div>
 
 <script>
-var allDataItems = ["iosNotes", 'habits','user', 'prayers','bible-favorites']
-var allData = []
-  allDataItems.map(i=>allData.push([i,localStorage.getItem(i)]));
-  allData = JSON.stringify(allData
+  // ✅ call your backup functions here
+  async function startBackup() {
+    const username = document.getElementById("username").value.trim();
+    const pin = document.getElementById("pin").value.trim();
     
-  )
-</script>
-</body>
+    if (!username || !pin) {
+      alert("⚠️ Please enter both username and pin.");
+      return;
+    }
 
+    // call your firstBackup() or backupToBaserow() depending on state
+    if (!localStorage.getItem("user"). username) {
+      
+      await firstBackup(username, pin);
+    } else {
+      
+      await backupToBaserow();
+    }
+  }
+  document.getElementById("username").value = JSON.parse(localStorage.getItem("user")). username
+      document.getElementById("pin").value = JSON.parse(localStorage.getItem("user")).pin
+      
+  const BASEROW_API_TOKEN = 'eF8Kya9KtpCbMLY8zWIS84BcZGgEbJCH'
+  const BASEROW_API_URL = 'https://api.baserow.io/api/database/rows/table/650290/'
+  function collectLocalData() {
+  const allDataItems = ["iosNotes", "habits", "user", "prayers", "bible-favorites"];
+  const allData = [];
+
+  allDataItems.forEach(key => {
+    allData.push([key, localStorage.getItem(key)]);
+  });
+
+  return JSON.stringify(allData);
+}
+  
+  async function firstBackup(username, pin) {
+  const data = collectLocalData();
+
+  // Check if username is already taken
+  const checkRes = await fetch(BASEROW_API_URL + "?user_field_names=true", {
+    headers: { "Authorization": "Token " + BASEROW_API_TOKEN }
+  });
+  const rows = await checkRes.json();
+  const existing = rows.results.find(r => r.username === username);
+
+  if (existing) {
+    alert("⚠️ Username is already taken, please choose another.");
+    return;
+  }
+
+  // Create new row
+  const createRes = await fetch(BASEROW_API_URL+ "?user_field_names=true", {
+    method: "POST",
+    headers: {
+      "Authorization": "Token " + BASEROW_API_TOKEN,
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      username: username,
+      PIN: pin,
+      data: data,
+      last_backup: new Date().toISOString()
+    })
+  });
+
+  const result = await createRes.json();
+  console.log("✅ Backup created:", result);
+
+  // Save username + pin locally for future backups
+  saveUserCredentials(username, pin);
+
+  return result;
+}
+function saveUserCredentials(username, pin) {
+  let user = JSON.parse(localStorage.getItem("user") || "{}");
+  user.username = username;
+  user.pin = pin;
+  localStorage.setItem("user", JSON.stringify(user));
+}
+async function backupToBaserow() {
+  let user = JSON.parse(localStorage.getItem("user") || "{}");
+  if (!user.username || !user.pin) {
+    alert("⚠️ Please set up your backup account first.");
+    return;
+  }
+
+  const data = collectLocalData();
+
+  // Get all rows
+  const checkRes = await fetch(BASEROW_API_URL + "?user_field_names=true", {
+    headers: { "Authorization": "Token " + BASEROW_API_TOKEN }
+  });
+  const rows = await checkRes.json();
+  const existing = rows.results.find(r => r.username === user.username);
+
+  if (!existing) {
+    alert("⚠️ Account not found. Try first backup again.");
+    return;
+  }
+
+  // Verify PIN
+  if (existing.pin !== user.pin) {
+    alert("⚠️ Wrong PIN.");
+    return;
+  }
+
+  // Update row
+  const updateRes = await fetch(BASEROW_API_URL + existing.id + "/"+ "?user_field_names=true", {
+    method: "PATCH",
+    headers: {
+      "Authorization": "Token " + BASEROW_API_TOKEN,
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      data: data,
+      last_backup: new Date().toISOString()
+    })
+  });
+
+  const result = await updateRes.json();
+  console.log("✅ Backup updated:", result);
+  return result;
+}
+  async function restoreBackup() {
+    const username = document.getElementById("username").value.trim();
+    const pin = document.getElementById("pin").value.trim();
+
+    if (!username || !pin) {
+      alert("⚠️ Please enter both username and pin.");
+      return;
+    }
+
+    // you can implement restore here
+    console.log("Restore for:", username, pin);
+  }
+</script>
+
+</body>
 </html>
