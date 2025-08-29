@@ -35,11 +35,12 @@
     vm.quillContents = undefined;
     vm.insertBible = insertBible;
 
-    function insertBible() {
+    const insertBible = () => {
       quill.clipboard.dangerouslyPasteHTML(vm.cursorPosition, '<p class="bible">bible here</p>');
     }
 
     // quill
+    vm.insertBible()
 
     quill.on('editor-change', function (eventName, ...args) {
       if (eventName === 'text-change') {

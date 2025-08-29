@@ -74,7 +74,7 @@
 </head>
 <body>
   <header>
-    <span onclick="window.location.href='../../dashboard.html'" class="ri-arrow-left-s-line"></span>
+    <span onclick="history.length > 1?history.back():window.location.href='../../notes.html'" class="ri-arrow-left-s-line"></span>
     <h2>Note</h2>
   </header>
 
@@ -126,6 +126,10 @@
     }
 
     loadNote();
+    
+    function back(){
+      history.back()
+    }
   </script>
 </body>
 </html>

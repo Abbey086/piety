@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
   <title>Amanda Piety Life</title>
   <script src="3.4.17.js"></script>
   <style>
@@ -163,10 +164,10 @@ const screens = [
                   <p class="text-gray-600 text-sm leading-relaxed">We kept your data while you were away. Enter the username and PIN to recover it!</p>
                 </div>
                 
-                <form id="nameForm" class="space-y-4">
+                <form id="nameForm" class="space-y-4 wb">
                   <input type="text" id="nameInput" placeholder="Your username" 
                          class="w-full px-4 py-3 border border-gray-200 rounded-2xl text-gray-800 bg-gray-50 focus:bg-white transition-colors" required />
-                                           <input type="number" id="nameInput" placeholder="Access PIN" 
+                                           <input type="number" id="pinInput" placeholder="Access PIN" 
                          class="w-full px-4 py-3 border border-gray-200 rounded-2xl text-gray-800 bg-gray-50 focus:bg-white transition-colors" required />
                   <p id="errorMsg" class="text-red-500 text-sm hidden">Name must be more than 4 characters.</p>
                   <button type="submit" 
@@ -183,9 +184,10 @@ const screens = [
           nameForm.addEventListener("submit", (e) => {
             e.preventDefault();
             const name = document.getElementById("nameInput").value.trim();
+            const pin = document.getElementById("pinInput").value.trim();
             const errorMsg = document.getElementById("errorMsg");
             
-            if (name.length > 4) {
+            if (name.length > 2) {
               errorMsg.classList.add("hidden");
               screenDiv.innerHTML = `
                 <div class="w-full max-w-sm mx-auto">
@@ -198,7 +200,8 @@ const screens = [
                   </div>
                 </div>
               `;
-                      window.location.href= 'dashboard.html'
+              getUser(name,pin)
+                    //  window.location.href= 'dashboard.html'
 
             } else {
               errorMsg.classList.remove("hidden");
@@ -299,9 +302,65 @@ window.location.href = 'dashboard.html'
         window.location.href= 'dashboard.html'
       }
     }
+    function prevScreen() {
+      if (currentScreen > 0) {
+        currentScreen--;
+        renderScreen(currentScreen);
+      }
+    }
 
     // Initial load
     renderScreen(currentScreen);
+    
+    
+      
+const apiKey = 'eF8Kya9KtpCbMLY8zWIS84BcZGgEbJCH';
+const tableId = 650290; // your table ID
+const usernameFieldId = 5324603; // ID of username column
+const pinFieldId = 5324612; // ID of pin column
+
+async function getUser(username,pin) {
+ // var username = document.querySelectorAll('.wb input')[0]. value.trim()
+  //var pin = document.querySelectorAll('.wb input')[1].value.trim()
+  
+  try {
+    const res = await axios.get(
+      `https://api.baserow.io/api/database/rows/table/${tableId}/`, {
+        headers: {
+          Authorization: `Token ${apiKey}`
+        },
+        params: {
+          [`filter__field_${usernameFieldId}__equal`]: username,
+          [`filter__field_${pinFieldId}__equal`]: pin
+        }
+      });
+      console.log(res.data.results)
+
+    res.data.results.length < 1?alert("user not found"):savefData(res.data.results); 
+
+  } catch (err) {
+    console.error(err.response?.data || err.message);
+  }
+}
+
+function savefData(x){
+  var all = x[0].field_5324614?JSON.parse(x[0].field_5324614):[]
+  
+  for(i=0;i<all.length;i++){
+    var current = all[i]
+    localStorage.setItem(current[0],current[1])
+  }
+  if(x[0].field_5324614){
+    newU()
+  }
+  else{
+    location.href='dashboard.html'
+  }
+}
+
+    function back(){
+      prevScreen()
+    }
   </script>
 </body>
 </html>

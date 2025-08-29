@@ -190,6 +190,12 @@
   <!-- Tab Bar -->
 
   <script>
+  
+  const pm = new URLSearchParams(location.search)
+  var add = pm.get('add')
+  if (add == 'true'){
+    showPage('add-page')
+  }
     // Prayer data
     let prayers = JSON.parse(localStorage.getItem('prayers')) || [];
     let currentPrayerId = null;
@@ -352,6 +358,21 @@ console.log('f')
     function savePrayers() {
       localStorage.setItem('prayers', JSON.stringify(prayers));
     }
+      function back(){
+    var add = document.querySelector('#add-page')
+    var detail = document.querySelector('#detail-page')
+
+    if(!add.classList.contains('hidden')){
+      showPage('main-page')
+      return 0
+    }
+  else if(!detail.classList.contains('hidden')){
+    showPage('main-page')
+
+  }
+  
+}
+
   </script>
   
   
@@ -510,19 +531,19 @@ console.log('f')
           <i class="ri-add-line nav__expand-icon" id="nav-expand-icon"></i>
         </button>
         <ul class="nav__expand-list" id="nav-expand-list">
-          <li onclick="location.href='notes.html'">
+          <li onclick="location.href='editor/index.html'">
             <a class="nav__expand-link">
               <i class="ri-file-3-line"></i>
               <span>Notes</span>
             </a>
           </li>
-          <li onclick="location.href='habit.html'">
+          <li onclick="location.href='prayer.html?add=true'">
             <a class="nav__expand-link">
               <i class="ri-candle-line"></i>
               <span>Prayer</span>
             </a>
           </li>
-          <li onclick="location.href='habit.html'">
+          <li onclick="location.href='habit.html?add=true'">
             <a class="nav__expand-link">
               <i class="ri-task-line"></i>
               <span>Habit</span>

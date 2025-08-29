@@ -334,7 +334,12 @@
     let habits = [];
     let currentSelectedDate = getToday();
     let currentlyEditingHabitId = null;
-    
+      const pm = new URLSearchParams(location.search)
+  var add = pm.get('add')
+  if (add == 'true'){
+    showScreen('add-screen')
+  }
+
     // Initialize the app
     document.addEventListener('DOMContentLoaded', function() {
       // Load habits from localStorage
@@ -411,7 +416,7 @@
         container.appendChild(dateBox);
         
       }
-            container.scrollLeft=-10000
+      document.querySelector('.date-box.active').scrollIntoView()
 
     }
     
@@ -646,6 +651,22 @@
     window.addEventListener('resize', function() {
       // You can add responsive adjustments here if needed
     });
+          function back(){
+    var add = document.querySelector('#add-screen')
+    var detail = document.querySelector('#detail-screen')
+
+    if(!add.classList.contains('hidden')){
+      showScreen('main-screen')
+      return 0
+    }
+  else if(!detail.classList.contains('hidden')){
+    showScreen('main-screen')
+
+
+  }
+  
+}
+
   </script>
   
   
@@ -803,19 +824,19 @@
           <i class="ri-add-line nav__expand-icon" id="nav-expand-icon"></i>
         </button>
         <ul class="nav__expand-list" id="nav-expand-list">
-          <li onclick="location.href='notes.html'">
+          <li onclick="location.href='editor/index.html'">
             <a class="nav__expand-link">
               <i class="ri-file-3-line"></i>
               <span>Notes</span>
             </a>
           </li>
-          <li onclick="location.href='habit.html'">
+          <li onclick="location.href='prayer.html?add=true'">
             <a class="nav__expand-link">
               <i class="ri-candle-line"></i>
               <span>Prayer</span>
             </a>
           </li>
-          <li onclick="location.href='habit.html'">
+          <li onclick="location.href='habit.html?add=true'">
             <a class="nav__expand-link">
               <i class="ri-task-line"></i>
               <span>Habit</span>

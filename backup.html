@@ -79,7 +79,7 @@
   <p>Secure your notes, prayers & habits in the cloud. Restore anytime with your username + pin.</p>
   
   <input type="text" id="username" placeholder="Username (no spaces)">
-  <input type="password" id="pin" placeholder="4-digit PIN">
+  <input type="number" id="pin" placeholder="4-digit PIN">
   
   <button class="btn" onclick="startBackup()">Backup Now</button>
   <br><br>
@@ -97,7 +97,7 @@
     }
 
     // call your firstBackup() or backupToBaserow() depending on state
-    if (!localStorage.getItem("user"). username) {
+    if (!JSON.parse(localStorage.getItem("user")). username) {
       
       await firstBackup(username, pin);
     } else {
@@ -105,8 +105,11 @@
       await backupToBaserow();
     }
   }
+      if (JSON.parse(localStorage.getItem("user")). username){
   document.getElementById("username").value = JSON.parse(localStorage.getItem("user")). username
+  document.getElementById("pin").setAttribute('type' , "password")
       document.getElementById("pin").value = JSON.parse(localStorage.getItem("user")).pin
+   }
       
   const BASEROW_API_TOKEN = 'eF8Kya9KtpCbMLY8zWIS84BcZGgEbJCH'
   const BASEROW_API_URL = 'https://api.baserow.io/api/database/rows/table/650290/'
@@ -135,7 +138,7 @@
     alert("⚠️ Username is already taken, please choose another.");
     return;
   }
-
+ const date = new Date().toISOString()
   // Create new row
   const createRes = await fetch(BASEROW_API_URL+ "?user_field_names=true", {
     method: "POST",
@@ -147,12 +150,12 @@
       username: username,
       PIN: pin,
       data: data,
-      last_backup: new Date().toISOString()
+      last_backup:date
     })
   });
 
   const result = await createRes.json();
-  console.log("✅ Backup created:", result);
+  alert("✅ Backup successful");
 
   // Save username + pin locally for future backups
   saveUserCredentials(username, pin);
@@ -185,9 +188,9 @@ async function backupToBaserow() {
     alert("⚠️ Account not found. Try first backup again.");
     return;
   }
-
+console.log(existing)
   // Verify PIN
-  if (existing.pin !== user.pin) {
+  if (existing.PIN != user.pin) {
     alert("⚠️ Wrong PIN.");
     return;
   }
@@ -220,6 +223,9 @@ async function backupToBaserow() {
 
     // you can implement restore here
     console.log("Restore for:", username, pin);
+  }
+  function back(){
+    history.back()
   }
 </script>
 

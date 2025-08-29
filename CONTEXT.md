@@ -8,10 +8,8 @@
 
 todo:
 fix the note editor 
-fix habit date thing
-expansion button fix
-add expansion props listeners
-download and share verses bug + share in bible
+download and share verses bug + share in bible # 
 set up for already existing 
-back up
+back up 
 donate**
+back event # 

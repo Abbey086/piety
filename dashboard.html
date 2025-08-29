@@ -172,8 +172,14 @@
     </div>
   </header>
 
-  <div id="chart"></div>
-
+  <div id="chart">
+    <a href="backup.html" style="z-index: 1; position: relative; background: rgba(200, 200, 250);text-decoration:none; color: blue; padding: 7px 10px;border-radius: 22px;float: right; font-weight: normal;" class="ri-upload-line">   Back Up</a>
+  </div>
+<style>
+  .apexcharts-canvas svg{
+    position: absolute;
+  }
+</style>
   <div class="section">
     <h2>Recent Notes<span style="float: right; color: dodgerblue;font-size: 16px;" onclick="window.location.href='notes.html'">View All</span></h2>
     <div class="notes-grid" id="recentNotes"></div>
@@ -201,8 +207,8 @@ function graph(){
     const p = habits[i].completions[getToday()] / habits[i].frequency;
     total+=p;
   }
-  const averagePercentage = habits.length > 0 ? total*100/habits.length : 0;
-
+  var averagePercentage = habits.length > 0 ? total*100/habits.length : 0;
+ averagePercentage = averagePercentage?averagePercentage:0
   var options = {  
         series: [averagePercentage],  // Use the average percentage for the chart  
         chart: {  
@@ -514,19 +520,19 @@ loadNotes();
           <i class="ri-add-line nav__expand-icon" id="nav-expand-icon"></i>
         </button>
         <ul class="nav__expand-list" id="nav-expand-list">
-          <li onclick="location.href='notes.html'">
+          <li onclick="location.href='editor/index.html'">
             <a class="nav__expand-link">
               <i class="ri-file-3-line"></i>
               <span>Notes</span>
             </a>
           </li>
-          <li onclick="location.href='habit.html'">
+          <li onclick="location.href='prayer.html?add=true'">
             <a class="nav__expand-link">
               <i class="ri-candle-line"></i>
               <span>Prayer</span>
             </a>
           </li>
-          <li onclick="location.href='habit.html'">
+          <li onclick="location.href='habit.html?add=true'">
             <a class="nav__expand-link">
               <i class="ri-task-line"></i>
               <span>Habit</span>
