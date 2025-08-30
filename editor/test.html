@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Duo Mascot Actions</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <style>
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background: #f0f8ff;
+      flex-direction: column;
+      gap: 20px;
+    }
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+      max-width: 600px;
+    }
+    button {
+      padding: 8px 14px;
+      border: none;
+      border-radius: 8px;
+      background: #4caf50;
+      color: white;
+      cursor: pointer;
+      font-size: 15px;
+      transition: background 0.2s;
+    }
+    button:hover {
+      background: #45a049;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Your mascot, unchanged -->
+  <svg id="duo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="350" height="350">
+    <!-- Body -->
+    <ellipse id="body" cx="100" cy="120" rx="50" ry="60" fill="#ffffff" stroke="#b0b0b0" stroke-width="2"/>
+    
+    <!-- Eyes -->
+    <ellipse id="eyeL" cx="80" cy="100" rx="12" ry="12" fill="#ffffff" stroke="#000" stroke-width="1"/>
+    <ellipse id="eyeR" cx="120" cy="100" rx="12" ry="12" fill="#ffffff" stroke="#000" stroke-width="1"/>
+    
+    <!-- Pupils -->
+    <circle id="pupilL" cx="80" cy="100" r="6" fill="#000"/>
+    <circle id="pupilR" cx="120" cy="100" r="6" fill="#000"/>
+    
+    <!-- Beak -->
+    <polygon id="beak" points="95,120 105,120 100,130" fill="#f4a261"/>
+    
+    <!-- Wings -->
+    <path id="wingL" d="M53,140 Q0,90 53,100" fill="#ffffff" stroke="#b0b0b0" stroke-width="2"/>
+    <path id="wingR" d="M147,140 Q200,90 146,100" fill="#ffffff" stroke="#b0b0b0" stroke-width="2"/>
+    
+    <!-- Feet -->
+    <ellipse id="footL" cx="80" cy="186" rx="8" ry="4" fill="#f4a261"/>
+    <ellipse id="footR" cx="120" cy="186" rx="8" ry="4" fill="#f4a261"/>
+
+    <!-- Zzz bubble -->
+    <text id="zzz" x="140" y="60" font-size="24" fill="#333" opacity="0">Zzz</text>
+  </svg>
+
+  <!-- Control panel -->
+  <div class="controls">
+    <button onclick="duo.jump()">Jump</button>
+    <button onclick="duo.flapWings()">Flap Wings</button>
+    <button onclick="duo.blink()">Blink</button>
+    <button onclick="duo.wave()">Wave</button>
+    <button onclick="duo.rollEyes()">Roll Eyes</button>
+    <button onclick="duo.fly()">Fly</button>
+    <button onclick="duo.slide()">Slide</button>
+    <button onclick="duo.sleep()">Sleep</button>
+  </div>
+
+<script>
+  const duo = {
+    jump: () => {
+      // Pre-jump: feet move closer to body
+      gsap.to(["#footL", "#footR"], {y:-10, duration:0.2, ease:"power1.in"});
+
+      // Jump: feet stretch away (down)
+      gsap.to("#duo", {y:-80, duration:0.4, ease:"power2.out", delay:0.2});
+      gsap.to(["#footL", "#footR"], {y:20, duration:0.4, ease:"power2.out", delay:0.2});
+
+      // Landing: reset feet & body
+      gsap.to("#duo", {y:0, duration:0.5, ease:"bounce.out", delay:0.6});
+      gsap.to(["#footL", "#footR"], {y:0, duration:0.5, ease:"bounce.out", delay:0.6});
+    },
+    flapWings: () => {
+      gsap.to("#wingL", {rotation:-30, transformOrigin:"50% 100%", yoyo:true, repeat:5, duration:0.2});
+      gsap.to("#wingR", {rotation:30, transformOrigin:"50% 100%", yoyo:true, repeat:5, duration:0.2});
+    },
+    blink: () => {
+      gsap.to(["#eyeL", "#eyeR"], {scaleY:0.1, transformOrigin:"center", duration:0.1, yoyo:true, repeat:1});
+    },
+    wave: () => {
+  gsap.to("#wingR", {
+    rotation: -25, // rotation angle
+    transformOrigin: "146px 100px", // pivot at the wing-body joint
+    duration: 0.3,
+    yoyo: true,
+    repeat: 5,
+    ease: "sine.inOut"
+  });
+},
+    rollEyes: () => {
+      gsap.to("#pupilL", {x:5, y:5, duration:0.5, yoyo:true, repeat:1});
+      gsap.to("#pupilR", {x:5, y:5, duration:0.5, yoyo:true, repeat:1});
+    },
+    fly: () => {
+      gsap.to("#duo", {y:-200, duration:1, ease:"power2.out"});
+      gsap.to("#duo", {y:0, duration:1, ease:"bounce.out", delay:1});
+    },
+    slide: () => {
+      gsap.to("#duo", {x:100, duration:0.5, yoyo:true, repeat:1});
+    },
+    sleep: () => {
+      gsap.to("#duo", {scaleY:1.05, duration:1, yoyo:true, repeat:5, ease:"sine.inOut"});
+      gsap.fromTo("#zzz", {opacity:0, y:60}, {opacity:1, y:20, duration:2, repeat:2, yoyo:true, ease:"power1.out"});
+    }
+  };
+</script>
+</body>
+</html>
